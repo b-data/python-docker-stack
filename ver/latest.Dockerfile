@@ -53,3 +53,5 @@ RUN apt-get update \
   fi \
   ## Clean up
   && rm -rf /var/lib/apt/lists/*
+
+CMD ["python3"]
