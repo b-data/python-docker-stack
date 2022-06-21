@@ -1,4 +1,4 @@
-ARG PYTHON_VERSION=3.10.5
+ARG PYTHON_VERSION
 ARG CTAN_REPO=https://mirror.ctan.org/systems/texlive/tlnet
 
 FROM registry.gitlab.b-data.ch/python/base:${PYTHON_VERSION}
