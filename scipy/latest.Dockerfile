@@ -1,10 +1,14 @@
 ARG PYTHON_VERSION
+ARG NUMPY_VERSION=1.22.4
+ARG SCIPY_VERSION=1.8.1
 ARG CTAN_REPO=https://mirror.ctan.org/systems/texlive/tlnet
 
 FROM registry.gitlab.b-data.ch/python/base:${PYTHON_VERSION}
 
 ARG DEBIAN_FRONTEND=noninteractive
 
+ARG NUMPY_VERSION
+ARG SCIPY_VERSION
 ARG CTAN_REPO
 
 ENV CTAN_REPO=${CTAN_REPO} \
@@ -47,8 +51,8 @@ RUN wget "https://travis-bin.yihui.name/texlive-local.deb" \
   && chmod -R g+wx /opt/TinyTeX/bin \
   ## Build numpy and scipy using stock OpenBLAS
   && pip install --no-binary=":all:" \
-    numpy \
-    scipy \
+    numpy==${NUMPY_VERSION} \
+    scipy==${SCIPY_VERSION} \
   ## Install Python packages
   && pip install \
     altair \
