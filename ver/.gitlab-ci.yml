@@ -81,7 +81,6 @@ build:version-linux-amd64:
   script:
     - >
       docker build --pull
-      --build-arg PYTHON_VERSION
       -t $CI_APP_REPO:$CI_APP_TAG-linux-amd64
       -f ver/$PYTHON_VERSION.Dockerfile .
     - docker push $CI_APP_REPO:$CI_APP_TAG-linux-amd64
@@ -98,7 +97,6 @@ build:version-linux-arm64v8:
   script:
     - >
       docker build --pull
-      --build-arg PYTHON_VERSION
       -t $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
       -f ver/$PYTHON_VERSION.Dockerfile .
     - docker push $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
