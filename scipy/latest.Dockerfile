@@ -1,19 +1,13 @@
 ARG PYTHON_VERSION
-ARG NUMPY_VERSION=1.22.4
-ARG SCIPY_VERSION=1.8.1
 ARG CTAN_REPO=https://mirror.ctan.org/systems/texlive/tlnet
 
 FROM registry.gitlab.b-data.ch/python/base:${PYTHON_VERSION}
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-ARG NUMPY_VERSION
-ARG SCIPY_VERSION
 ARG CTAN_REPO
 
-ENV NUMPY_VERSION=${NUMPY_VERSION} \
-    SCIPY_VERSION=${SCIPY_VERSION} \
-    CTAN_REPO=${CTAN_REPO} \
+ENV CTAN_REPO=${CTAN_REPO} \
     PATH=/opt/TinyTeX/bin/linux:$PATH
 
 RUN wget "https://travis-bin.yihui.name/texlive-local.deb" \
@@ -58,8 +52,8 @@ RUN wget "https://travis-bin.yihui.name/texlive-local.deb" \
   && chown -R root:users /opt/TinyTeX \
   && chmod -R g+w /opt/TinyTeX \
   && chmod -R g+wx /opt/TinyTeX/bin \
-  ## Build numpy and scipy using stock OpenBLAS
-  && pip install --no-binary="numpy,scipy" \
+  ## Install Python packages
+  && pip install \
     altair \
     beautifulsoup4 \
     bokeh \
@@ -74,13 +68,13 @@ RUN wget "https://travis-bin.yihui.name/texlive-local.deb" \
     matplotlib \
     numba \
     numexpr \
-    numpy==${NUMPY_VERSION} \
+    numpy \
     pandas \
     patsy \
     protobuf \
     scikit-image \
     scikit-learn \
-    scipy==${SCIPY_VERSION} \
+    scipy \
     seaborn \
     sqlalchemy \
     statsmodels \
