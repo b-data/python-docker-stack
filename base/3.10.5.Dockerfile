@@ -1,8 +1,19 @@
 ARG BASE_IMAGE=debian:bullseye
-ARG PYTHON_VERSION=3.10.4
-ARG GIT_VERSION=2.36.1
+ARG PYTHON_VERSION=3.10.5
+ARG GIT_VERSION=2.37.1
 ARG GIT_LFS_VERSION=3.2.0
 ARG PANDOC_VERSION=2.18
+
+FROM registry.gitlab.b-data.ch/python/ver:${PYTHON_VERSION} as files
+
+RUN mkdir /files
+
+COPY scripts /files
+
+RUN find /files -type d -exec chmod 755 {} \; \
+  && find /files -type f -exec chmod 644 {} \;
+  ## Ensure file modes are correct when using CI
+  ## Otherwise set to 777 in the target image
 
 FROM registry.gitlab.b-data.ch/git/gsi/${GIT_VERSION}/${BASE_IMAGE} as gsi
 FROM registry.gitlab.b-data.ch/git-lfs/glfsi:${GIT_LFS_VERSION} as glfsi
@@ -38,10 +49,8 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     gnupg \
     htop \
     info \
-    inkscape \
     jq \
     libclang-dev \
-    lsb-release \
     man-db \
     nano \
     procps \
@@ -93,3 +102,6 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   && rm -rf /tmp/* \
   && rm -rf /var/lib/apt/lists/* \
     $HOME/.cache
+
+## Copy files as late as possible to avoid cache busting
+COPY --from=files /files /

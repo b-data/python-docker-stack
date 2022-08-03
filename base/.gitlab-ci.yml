@@ -45,11 +45,11 @@ build:latest-linux-amd64:
     - os:linux
   script:
     - >
-      docker build --pull
+      cd base && docker build --pull
       --build-arg PYTHON_VERSION
       -t $CI_APP_REPO:$CI_APP_TAG-linux-amd64
       -t $CI_APP_REPO:$VERSION_MAJ_MIN_PAT-linux-amd64
-      -f base/latest.Dockerfile .
+      -f latest.Dockerfile .
     - docker push -a $CI_APP_REPO
   rules:
     - if: $CI_COMMIT_BRANCH == "main" && $UPDATE_MODE != "true" && $CI_BUILD_PLATFORMS =~ /(linux\/amd64)/
@@ -63,11 +63,11 @@ build:latest-linux-arm64v8:
     - os:linux
   script:
     - >
-      docker build --pull
+      cd base && docker build --pull
       --build-arg PYTHON_VERSION
       -t $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
       -t $CI_APP_REPO:$VERSION_MAJ_MIN_PAT-linux-arm64v8
-      -f base/latest.Dockerfile .
+      -f latest.Dockerfile .
     - docker push -a $CI_APP_REPO
   rules:
     - if: $CI_COMMIT_BRANCH == "main" && $UPDATE_MODE != "true" && $CI_BUILD_PLATFORMS =~ /(linux\/arm64\/v8)/
@@ -81,9 +81,9 @@ build:version-linux-amd64:
     - os:linux
   script:
     - >
-      docker build --pull
+      cd base && docker build --pull
       -t $CI_APP_REPO:$CI_APP_TAG-linux-amd64
-      -f base/$PYTHON_VERSION.Dockerfile .
+      -f $PYTHON_VERSION.Dockerfile .
     - docker push $CI_APP_REPO:$CI_APP_TAG-linux-amd64
   rules:
     - if: $CI_COMMIT_BRANCH == "freeze-version" && $CI_PIPELINE_TRIGGERED && $CI_BUILD_PLATFORMS =~ /(linux\/amd64)/
@@ -97,9 +97,9 @@ build:version-linux-arm64v8:
     - os:linux
   script:
     - >
-      docker build --pull
+      cd base && docker build --pull
       -t $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
-      -f base/$PYTHON_VERSION.Dockerfile .
+      -f $PYTHON_VERSION.Dockerfile .
     - docker push $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
   rules:
     - if: $CI_COMMIT_BRANCH == "freeze-version" && $CI_PIPELINE_TRIGGERED && $CI_BUILD_PLATFORMS =~ /(linux\/arm64\/v8)/
