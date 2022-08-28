@@ -2,7 +2,7 @@ ARG BASE_IMAGE=debian:bullseye
 ARG PYTHON_VERSION
 ARG GIT_VERSION=2.37.2
 ARG GIT_LFS_VERSION=3.2.0
-ARG PANDOC_VERSION=2.18
+ARG PANDOC_VERSION=2.19.2
 
 FROM registry.gitlab.b-data.ch/git/gsi/${GIT_VERSION}/${BASE_IMAGE} as gsi
 FROM registry.gitlab.b-data.ch/git-lfs/glfsi:${GIT_LFS_VERSION} as glfsi
