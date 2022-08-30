@@ -1,5 +1,5 @@
 ARG PYTHON_VERSION
-ARG QUARTO_VERSION=1.1.149
+ARG QUARTO_VERSION=1.1.163
 ARG CTAN_REPO=https://mirror.ctan.org/systems/texlive/tlnet
 
 FROM registry.gitlab.b-data.ch/python/base:${PYTHON_VERSION}
