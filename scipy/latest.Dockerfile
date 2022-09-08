@@ -1,5 +1,5 @@
 ARG PYTHON_VERSION
-ARG QUARTO_VERSION=1.0.37
+ARG QUARTO_VERSION=1.1.189
 ARG CTAN_REPO=https://mirror.ctan.org/systems/texlive/tlnet
 
 FROM registry.gitlab.b-data.ch/python/base:${PYTHON_VERSION}
@@ -58,7 +58,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     oberdiek \
     titling \
   && tlmgr path add \
-  && chown -R root:users /opt/TinyTeX \
+  && chown -R root:${NB_GID} /opt/TinyTeX \
   && chmod -R g+w /opt/TinyTeX \
   && chmod -R g+wx /opt/TinyTeX/bin \
   ## Install Python packages
