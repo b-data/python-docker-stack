@@ -1,8 +1,8 @@
 ARG BASE_IMAGE=debian:bullseye
-ARG PYTHON_VERSION=3.10.4
-ARG GIT_VERSION=2.36.1
+ARG PYTHON_VERSION=3.10.6
+ARG GIT_VERSION=2.37.3
 ARG GIT_LFS_VERSION=3.2.0
-ARG PANDOC_VERSION=2.18
+ARG PANDOC_VERSION=2.19.2
 
 FROM registry.gitlab.b-data.ch/git/gsi/${GIT_VERSION}/${BASE_IMAGE} as gsi
 FROM registry.gitlab.b-data.ch/git-lfs/glfsi:${GIT_LFS_VERSION} as glfsi
@@ -38,10 +38,8 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     gnupg \
     htop \
     info \
-    inkscape \
     jq \
     libclang-dev \
-    lsb-release \
     man-db \
     nano \
     procps \

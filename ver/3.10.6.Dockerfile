@@ -1,6 +1,6 @@
 ARG BASE_IMAGE=debian:bullseye
 ARG BLAS=libopenblas-dev
-ARG PYTHON_VERSION=3.10.4
+ARG PYTHON_VERSION=3.10.6
 ARG PYTHON_SUBTAG=slim-bullseye
 
 FROM python:${PYTHON_VERSION}-${PYTHON_SUBTAG} as psi
