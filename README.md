@@ -2,11 +2,11 @@
 
 # Python docker stack
 
-Pre-built multi-arch (`linux/amd64`, `linux/arm64/v8`) docker images:
+Multi-arch (`linux/amd64`, `linux/arm64/v8`) docker images:
 
-*  `registry.gitlab.b-data.ch/python/ver`
-*  `registry.gitlab.b-data.ch/python/base`
-*  `registry.gitlab.b-data.ch/python/scipy`
+*  [`registry.gitlab.b-data.ch/python/ver`](https://gitlab.b-data.ch/python/ver/container_registry)
+*  [`registry.gitlab.b-data.ch/python/base`](https://gitlab.b-data.ch/python/base/container_registry)
+*  [`registry.gitlab.b-data.ch/python/scipy`](https://gitlab.b-data.ch/python/scipy/container_registry)
 
 Images considered stable for Python versions ≥ 3.10.5.
 
@@ -85,17 +85,17 @@ docker run -it --rm python-ver[:<major>.<minor>.<patch>]
 
 from the project's GitLab Container Registries:
 
-*  [python/ver](https://gitlab.b-data.ch/python/ver/container_registry)  
+*  [`python/ver`](https://gitlab.b-data.ch/python/ver/container_registry)  
     ```bash
     docker run -it --rm \
       registry.gitlab.b-data.ch/python/ver[:<major>[.<minor>[.<patch>]]]
     ```
-*  [python/base](https://gitlab.b-data.ch/python/base/container_registry)  
+*  [`python/base`](https://gitlab.b-data.ch/python/base/container_registry)  
     ```bash
     docker run -it --rm \
       registry.gitlab.b-data.ch/python/base[:<major>[.<minor>[.<patch>]]]
     ```
-*  [python/scipy](https://gitlab.b-data.ch/python/scipy/container_registry)
+*  [`python/scipy`](https://gitlab.b-data.ch/python/scipy/container_registry)
     ```bash
     docker run -it --rm \
       registry.gitlab.b-data.ch/python/scipy[:<major>[.<minor>[.<patch>]]]
