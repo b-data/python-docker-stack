@@ -1,8 +1,9 @@
+ARG BUILD_ON_IMAGE=registry.gitlab.b-data.ch/python/base
 ARG PYTHON_VERSION
-ARG QUARTO_VERSION=1.1.189
+ARG QUARTO_VERSION=1.1.251
 ARG CTAN_REPO=https://mirror.ctan.org/systems/texlive/tlnet
 
-FROM registry.gitlab.b-data.ch/python/base:${PYTHON_VERSION}
+FROM ${BUILD_ON_IMAGE}:${PYTHON_VERSION}
 
 ARG DEBIAN_FRONTEND=noninteractive
 
