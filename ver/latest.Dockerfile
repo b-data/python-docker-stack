@@ -36,6 +36,7 @@ RUN apt-get update \
     ${BLAS} \
     locales \
     netbase \
+    pkg-config \
     tzdata \
     unzip \
     zip \
