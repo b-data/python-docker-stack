@@ -92,7 +92,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     scipy \
     seaborn \
     sqlalchemy \
-    git+https://github.com/statsmodels/statsmodels.git@main \
+    statsmodels \
     sympy \
     git+https://github.com/PyTables/PyTables.git@master \
     #widgetsnbextension \
