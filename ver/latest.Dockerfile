@@ -1,11 +1,13 @@
-ARG BASE_IMAGE=debian:bullseye
-ARG BLAS=libopenblas-dev
+ARG BASE_IMAGE=debian
+ARG BASE_IMAGE_TAG=11
 ARG PYTHON_VERSION
-ARG PYTHON_SUBTAG=slim-bullseye
+ARG CUDA_IMAGE
+ARG CUDA_VERSION
+ARG CUDA_IMAGE_SUBTAG
 
-FROM python:${PYTHON_VERSION}-${PYTHON_SUBTAG} as psi
+FROM registry.gitlab.b-data.ch/python/psi/${PYTHON_VERSION}/${BASE_IMAGE}:${BASE_IMAGE_TAG} as psi
 
-FROM ${BASE_IMAGE}
+FROM ${CUDA_IMAGE:-$BASE_IMAGE}:${CUDA_VERSION:-$BASE_IMAGE_TAG}${CUDA_IMAGE_SUBTAG:+-}${CUDA_IMAGE_SUBTAG}
 
 LABEL org.opencontainers.image.licenses="MIT" \
       org.opencontainers.image.source="https://gitlab.b-data.ch/python/docker-stack" \
@@ -15,11 +17,16 @@ LABEL org.opencontainers.image.licenses="MIT" \
 ARG DEBIAN_FRONTEND=noninteractive
 
 ARG BASE_IMAGE
+ARG BASE_IMAGE_TAG
 ARG BLAS
 ARG PYTHON_VERSION
+ARG CUDA_IMAGE
+ARG CUDA_VERSION
+ARG CUDA_IMAGE_SUBTAG
 
-ENV BASE_IMAGE=${BASE_IMAGE} \
+ENV BASE_IMAGE=${BASE_IMAGE}:${BASE_IMAGE_TAG} \
     PYTHON_VERSION=${PYTHON_VERSION} \
+    CUDA_IMAGE=${CUDA_IMAGE}${CUDA_VERSION:+:}${CUDA_VERSION}${CUDA_IMAGE_SUBTAG:+-}${CUDA_IMAGE_SUBTAG} \
     LANG=en_US.UTF-8 \
     TERM=xterm \
     TZ=Etc/UTC
