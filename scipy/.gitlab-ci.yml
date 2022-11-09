@@ -38,6 +38,10 @@
   before_script:
     - *before-script-build
 
+.post:
+  image: registry.gitlab.b-data.ch/docker/docker-buildx:latest
+  stage: .post
+
 build:latest-linux-amd64:
   extends: .build
   tags:
@@ -109,6 +113,7 @@ build:version-linux-arm64v8:
 build-manifest:latest-linux-multiarch:
   extends: .build
   stage: deploy
+  needs: ["build:latest-linux-amd64", "build:latest-linux-arm64v8"]
   script:
     - |
       for i in $OS_ARCH; do
@@ -150,6 +155,7 @@ build-manifest:latest-linux-multiarch:
 build-manifest:version-linux-multiarch:
   extends: .build
   stage: deploy
+  needs: ["build:version-linux-amd64", "build:version-linux-arm64v8"]
   script:
     - |
       for i in $OS_ARCH; do
