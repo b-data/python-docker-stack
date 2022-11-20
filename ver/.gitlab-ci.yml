@@ -1,6 +1,7 @@
 .env:
   variables:
     PYTHON_VERSION: "3.11.0"
+    CUDA_VERSION: "11.7.1"
 
 .before-script-build: &before-script-build
   - |
@@ -50,6 +51,11 @@ build:latest-linux-amd64:
   script:
     - >
       docker build --pull
+      --build-arg BASE_IMAGE
+      --build-arg BASE_IMAGE_TAG
+      --build-arg CUDA_IMAGE
+      --build-arg CUDA_VERSION
+      --build-arg CUDA_IMAGE_SUBTAG
       --build-arg PYTHON_VERSION
       -t $CI_APP_REPO:$CI_APP_TAG-linux-amd64
       -t $CI_APP_REPO:latest-linux-amd64
@@ -68,6 +74,11 @@ build:latest-linux-arm64v8:
   script:
     - >
       docker build --pull
+      --build-arg BASE_IMAGE
+      --build-arg BASE_IMAGE_TAG
+      --build-arg CUDA_IMAGE
+      --build-arg CUDA_VERSION
+      --build-arg CUDA_IMAGE_SUBTAG
       --build-arg PYTHON_VERSION
       -t $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
       -t $CI_APP_REPO:latest-linux-arm64v8
@@ -86,6 +97,10 @@ build:version-linux-amd64:
   script:
     - >
       docker build --pull
+      --build-arg BASE_IMAGE
+      --build-arg BASE_IMAGE_TAG
+      --build-arg CUDA_IMAGE
+      --build-arg CUDA_IMAGE_SUBTAG
       -t $CI_APP_REPO:$CI_APP_TAG-linux-amd64
       -f ver/$PYTHON_VERSION.Dockerfile .
     - docker push $CI_APP_REPO:$CI_APP_TAG-linux-amd64
@@ -102,6 +117,10 @@ build:version-linux-arm64v8:
   script:
     - >
       docker build --pull
+      --build-arg BASE_IMAGE
+      --build-arg BASE_IMAGE_TAG
+      --build-arg CUDA_IMAGE
+      --build-arg CUDA_IMAGE_SUBTAG
       -t $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
       -f ver/$PYTHON_VERSION.Dockerfile .
     - docker push $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8

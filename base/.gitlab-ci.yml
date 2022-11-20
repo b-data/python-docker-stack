@@ -51,6 +51,9 @@ build:latest-linux-amd64:
   script:
     - >
       cd base && docker build --pull
+      --build-arg BASE_IMAGE
+      --build-arg BASE_IMAGE_TAG
+      --build-arg BUILD_ON_IMAGE
       --build-arg PYTHON_VERSION
       -t $CI_APP_REPO:$CI_APP_TAG-linux-amd64
       -t $CI_APP_REPO:latest-linux-amd64
@@ -69,6 +72,9 @@ build:latest-linux-arm64v8:
   script:
     - >
       cd base && docker build --pull
+      --build-arg BASE_IMAGE
+      --build-arg BASE_IMAGE_TAG
+      --build-arg BUILD_ON_IMAGE
       --build-arg PYTHON_VERSION
       -t $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
       -t $CI_APP_REPO:latest-linux-arm64v8
@@ -87,6 +93,9 @@ build:version-linux-amd64:
   script:
     - >
       cd base && docker build --pull
+      --build-arg BASE_IMAGE
+      --build-arg BASE_IMAGE_TAG
+      --build-arg BUILD_ON_IMAGE
       -t $CI_APP_REPO:$CI_APP_TAG-linux-amd64
       -f $PYTHON_VERSION.Dockerfile .
     - docker push $CI_APP_REPO:$CI_APP_TAG-linux-amd64
@@ -103,6 +112,9 @@ build:version-linux-arm64v8:
   script:
     - >
       cd base && docker build --pull
+      --build-arg BASE_IMAGE
+      --build-arg BASE_IMAGE_TAG
+      --build-arg BUILD_ON_IMAGE
       -t $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
       -f $PYTHON_VERSION.Dockerfile .
     - docker push $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
