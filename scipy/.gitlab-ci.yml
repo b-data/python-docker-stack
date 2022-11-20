@@ -11,9 +11,7 @@
     fi
   - |
     export CI_APP_REPO=${CI_APP_REPO:-$CI_REGISTRY_IMAGE}
-    if [[ $CI_COMMIT_BRANCH == "main" ]]; then
-      export CI_APP_TAG=${CI_APP_TAG:-latest}
-    elif [[ $CI_COMMIT_BRANCH == "freeze-version" ]]; then
+    if [[ $CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "freeze-version" ]]; then
       export CI_APP_TAG=${CI_APP_TAG:-$PYTHON_VERSION}
     else
       export CI_APP_TAG=${CI_APP_TAG:-$CI_COMMIT_SHA}
@@ -22,12 +20,10 @@
     echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER
     --password-stdin $CI_REGISTRY
   - >
-    export VERSION_MAJ_MIN_PAT=$PYTHON_VERSION
-    
-    export VERSION_MAJ_MIN=`echo $VERSION_MAJ_MIN_PAT |
+    export VERSION_MAJ_MIN=`echo $PYTHON_VERSION |
     sed -n "s|\([[:digit:]]\+\.[[:digit:]]\+\).*|\1|p"`
     
-    export VERSION_MAJ=`echo $VERSION_MAJ_MIN_PAT |
+    export VERSION_MAJ=`echo $PYTHON_VERSION |
     sed -n "s|\([[:digit:]]\+\).*|\1|p"`
 
 .build:
@@ -57,7 +53,7 @@ build:latest-linux-amd64:
       docker build --pull
       --build-arg PYTHON_VERSION
       -t $CI_APP_REPO:$CI_APP_TAG-linux-amd64
-      -t $CI_APP_REPO:$VERSION_MAJ_MIN_PAT-linux-amd64
+      -t $CI_APP_REPO:latest-linux-amd64
       -f scipy/latest.Dockerfile .
     - docker push -a $CI_APP_REPO
   rules:
@@ -75,7 +71,7 @@ build:latest-linux-arm64v8:
       docker build --pull
       --build-arg PYTHON_VERSION
       -t $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
-      -t $CI_APP_REPO:$VERSION_MAJ_MIN_PAT-linux-arm64v8
+      -t $CI_APP_REPO:latest-linux-arm64v8
       -f scipy/latest.Dockerfile .
     - docker push -a $CI_APP_REPO
   rules:
@@ -131,12 +127,12 @@ build-manifest:latest-linux-multiarch:
       fi
       docker manifest push $CI_APP_REPO:$CI_APP_TAG
     - |
-      docker manifest create $CI_APP_REPO:$VERSION_MAJ_MIN_PAT $CI_MANIFEST_LIST
+      docker manifest create $CI_APP_REPO:latest $CI_MANIFEST_LIST
       if echo $OS_ARCH | grep "linux-arm64v8" >/dev/null ; then
-        docker manifest annotate --variant v8 $CI_APP_REPO:$VERSION_MAJ_MIN_PAT \
+        docker manifest annotate --variant v8 $CI_APP_REPO:latest \
           $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
       fi
-      docker manifest push $CI_APP_REPO:$VERSION_MAJ_MIN_PAT
+      docker manifest push $CI_APP_REPO:latest
     - |
       docker manifest create $CI_APP_REPO:$VERSION_MAJ_MIN $CI_MANIFEST_LIST
       if echo $OS_ARCH | grep "linux-arm64v8" >/dev/null ; then
