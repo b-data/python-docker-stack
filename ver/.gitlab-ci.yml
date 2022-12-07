@@ -1,3 +1,8 @@
+.env:
+  variables:
+    PYTHON_VERSION: "3.11.0"
+    CUDA_VERSION: "11.7.1"
+
 .before-script-build: &before-script-build
   - |
     if [[ ! -z "$CI_BUILD_PLATFORMS" ]]; then
@@ -6,9 +11,7 @@
     fi
   - |
     export CI_APP_REPO=${CI_APP_REPO:-$CI_REGISTRY_IMAGE}
-    if [[ $CI_COMMIT_BRANCH == "main" ]]; then
-      export CI_APP_TAG=${CI_APP_TAG:-latest}
-    elif [[ $CI_COMMIT_BRANCH == "freeze-version" ]]; then
+    if [[ $CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "freeze-version" ]]; then
       export CI_APP_TAG=${CI_APP_TAG:-$PYTHON_VERSION}
     else
       export CI_APP_TAG=${CI_APP_TAG:-$CI_COMMIT_SHA}
@@ -17,25 +20,28 @@
     echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER
     --password-stdin $CI_REGISTRY
   - >
-    export VERSION_MAJ_MIN_PAT=$PYTHON_VERSION
-    
-    export VERSION_MAJ_MIN=`echo $VERSION_MAJ_MIN_PAT |
+    export VERSION_MAJ_MIN=`echo $PYTHON_VERSION |
     sed -n "s|\([[:digit:]]\+\.[[:digit:]]\+\).*|\1|p"`
     
-    export VERSION_MAJ=`echo $VERSION_MAJ_MIN_PAT |
+    export VERSION_MAJ=`echo $PYTHON_VERSION |
     sed -n "s|\([[:digit:]]\+\).*|\1|p"`
 
 .build:
   image: registry.gitlab.b-data.ch/docker/docker-buildx:latest
   stage: build
+  extends: .env
   services:
     - docker:dind
   variables:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: "/certs"
-    PYTHON_VERSION: "3.10.8"
   before_script:
     - *before-script-build
+
+.post:
+  image: registry.gitlab.b-data.ch/docker/docker-buildx:latest
+  stage: .post
+  extends: .env
 
 build:latest-linux-amd64:
   extends: .build
@@ -45,9 +51,14 @@ build:latest-linux-amd64:
   script:
     - >
       docker build --pull
+      --build-arg BASE_IMAGE
+      --build-arg BASE_IMAGE_TAG
+      --build-arg CUDA_IMAGE
+      --build-arg CUDA_VERSION
+      --build-arg CUDA_IMAGE_SUBTAG
       --build-arg PYTHON_VERSION
       -t $CI_APP_REPO:$CI_APP_TAG-linux-amd64
-      -t $CI_APP_REPO:$VERSION_MAJ_MIN_PAT-linux-amd64
+      -t $CI_APP_REPO:latest-linux-amd64
       -f ver/latest.Dockerfile .
     - docker push -a $CI_APP_REPO
   rules:
@@ -63,9 +74,14 @@ build:latest-linux-arm64v8:
   script:
     - >
       docker build --pull
+      --build-arg BASE_IMAGE
+      --build-arg BASE_IMAGE_TAG
+      --build-arg CUDA_IMAGE
+      --build-arg CUDA_VERSION
+      --build-arg CUDA_IMAGE_SUBTAG
       --build-arg PYTHON_VERSION
       -t $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
-      -t $CI_APP_REPO:$VERSION_MAJ_MIN_PAT-linux-arm64v8
+      -t $CI_APP_REPO:latest-linux-arm64v8
       -f ver/latest.Dockerfile .
     - docker push -a $CI_APP_REPO
   rules:
@@ -81,6 +97,10 @@ build:version-linux-amd64:
   script:
     - >
       docker build --pull
+      --build-arg BASE_IMAGE
+      --build-arg BASE_IMAGE_TAG
+      --build-arg CUDA_IMAGE
+      --build-arg CUDA_IMAGE_SUBTAG
       -t $CI_APP_REPO:$CI_APP_TAG-linux-amd64
       -f ver/$PYTHON_VERSION.Dockerfile .
     - docker push $CI_APP_REPO:$CI_APP_TAG-linux-amd64
@@ -97,6 +117,10 @@ build:version-linux-arm64v8:
   script:
     - >
       docker build --pull
+      --build-arg BASE_IMAGE
+      --build-arg BASE_IMAGE_TAG
+      --build-arg CUDA_IMAGE
+      --build-arg CUDA_IMAGE_SUBTAG
       -t $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
       -f ver/$PYTHON_VERSION.Dockerfile .
     - docker push $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
@@ -107,7 +131,7 @@ build:version-linux-arm64v8:
 
 build-manifest:latest-linux-multiarch:
   extends: .build
-  stage: deploy
+  needs: ["build:latest-linux-amd64", "build:latest-linux-arm64v8"]
   script:
     - |
       for i in $OS_ARCH; do
@@ -121,12 +145,12 @@ build-manifest:latest-linux-multiarch:
       fi
       docker manifest push $CI_APP_REPO:$CI_APP_TAG
     - |
-      docker manifest create $CI_APP_REPO:$VERSION_MAJ_MIN_PAT $CI_MANIFEST_LIST
+      docker manifest create $CI_APP_REPO:latest $CI_MANIFEST_LIST
       if echo $OS_ARCH | grep "linux-arm64v8" >/dev/null ; then
-        docker manifest annotate --variant v8 $CI_APP_REPO:$VERSION_MAJ_MIN_PAT \
+        docker manifest annotate --variant v8 $CI_APP_REPO:latest \
           $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
       fi
-      docker manifest push $CI_APP_REPO:$VERSION_MAJ_MIN_PAT
+      docker manifest push $CI_APP_REPO:latest
     - |
       docker manifest create $CI_APP_REPO:$VERSION_MAJ_MIN $CI_MANIFEST_LIST
       if echo $OS_ARCH | grep "linux-arm64v8" >/dev/null ; then
@@ -148,7 +172,7 @@ build-manifest:latest-linux-multiarch:
 
 build-manifest:version-linux-multiarch:
   extends: .build
-  stage: deploy
+  needs: ["build:version-linux-amd64", "build:version-linux-arm64v8"]
   script:
     - |
       for i in $OS_ARCH; do
@@ -174,8 +198,9 @@ build-manifest:version-linux-multiarch:
         - ver/$PYTHON_VERSION.Dockerfile
 
 trigger-latest-build:
-  extends: .build
+  extends: .post
   stage: .post
+  needs: ["build-manifest:latest-linux-multiarch"]
   before_script:
     - apk upgrade --no-cache
     - apk add --update --no-cache curl
@@ -187,8 +212,9 @@ trigger-latest-build:
         - ver/latest.Dockerfile
 
 trigger-version-build:
-  extends: .build
+  extends: .post
   stage: .post
+  needs: ["build-manifest:version-linux-multiarch"]
   before_script:
     - apk upgrade --no-cache
     - apk add --update --no-cache curl
