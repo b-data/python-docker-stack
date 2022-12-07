@@ -1,6 +1,6 @@
 .env:
   variables:
-    PYTHON_VERSION: "3.11.0"
+    PYTHON_VERSION: "3.10.9"
     CUDA_VERSION: "11.7.1"
 
 .before-script-build: &before-script-build
