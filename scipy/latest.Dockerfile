@@ -1,6 +1,6 @@
 ARG BUILD_ON_IMAGE=registry.gitlab.b-data.ch/python/base
 ARG PYTHON_VERSION
-ARG QUARTO_VERSION=1.2.269
+ARG QUARTO_VERSION=1.2.280
 ARG CTAN_REPO=https://mirror.ctan.org/systems/texlive/tlnet
 
 FROM ${BUILD_ON_IMAGE}:${PYTHON_VERSION}
@@ -38,16 +38,10 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     rm quarto-${QUARTO_VERSION}-linux-${dpkgArch}.tar.gz; \
     ## Apply patch
     echo '\n\
-    79064,79065c79064,79069\n\
-    <         const sep = path.startsWith("/") ? "" : "/";\n\
-    <         const browseUrl = vsCodeServerProxyUri().replace("{{port}}", `${port}`) + sep + path;\n\
+    91521c91521\n\
+    <                 const url = isRStudioWorkbench() ? await rswURL(port, kPdfJsInitialPath) : "/" + kPdfJsInitialPath;\n\
     ---\n\
-    >         if (vsCodeServerProxyUri().endsWith("/")) {\n\
-    >             path = path.startsWith("/") ? path.slice(1) : path;\n\
-    >         } else {\n\
-    >             path = path.startsWith("/") ? path : "/" + path;\n\
-    >         }\n\
-    >         const browseUrl = vsCodeServerProxyUri().replace("{{port}}", `${port}`) + path;\n\
+    >                 const url = isRStudioWorkbench() ? await rswURL(port, kPdfJsInitialPath) : isVSCodeServer() ? vsCodeServerProxyUri().replace("{{port}}", `${port}`) + kPdfJsInitialPath : "/" + kPdfJsInitialPath;\n\
     ' | patch /opt/quarto/bin/quarto.js; \
     ## Remove quarto pandoc
     rm /opt/quarto/bin/tools/pandoc; \
