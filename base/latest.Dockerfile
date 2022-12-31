@@ -52,7 +52,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     sudo \
     swig \
     tmux \
-    vim \
+    vim-tiny \
     wget \
     zsh \
     ## Additional git runtime dependencies
