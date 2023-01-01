@@ -65,7 +65,9 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   && if [ -z "$PYTHON_VERSION" ]; then \
     apt-get -y install --no-install-recommends \
       python3-dev \
-      python3-distutils \
+      ## Install Python package installer
+      ## (dep: python3-distutils, python3-setuptools and python3-wheel)
+      python3-pip \
       ## Install venv module for python3
       python3-venv; \
     ## make some useful symlinks that are expected to exist
@@ -76,14 +78,15 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
       [ ! -e "/usr/bin/$dst" ]; \
       ln -svT "$src" "/usr/bin/$dst"; \
     done; \
+  else \
+    ## Force update pip, setuptools and wheel
+    curl -sLO https://bootstrap.pypa.io/get-pip.py; \
+    python get-pip.py \
+      pip \
+      setuptools \
+      wheel; \
+    rm get-pip.py; \
   fi \
-  ## Install/update pip, setuptools and wheel
-  && curl -sLO https://bootstrap.pypa.io/get-pip.py \
-  && python get-pip.py \
-    pip \
-    setuptools \
-    wheel \
-  && rm get-pip.py \
   ## Set default branch name to main
   && sudo git config --system init.defaultBranch main \
   ## Store passwords for one hour in memory
