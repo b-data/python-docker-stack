@@ -60,8 +60,8 @@ latest:
 
 ```bash
 cd ver && docker build \
-  --build-arg PYTHON_VERSION=3.10.7 \
-  -t python-ver \
+  --build-arg PYTHON_VERSION=3.11.1 \
+  -t python/ver \
   -f latest.Dockerfile .
 ```
 
@@ -69,18 +69,18 @@ version:
 
 ```bash
 cd ver && docker build \
-  -t python-ver:<major>.<minor>.<patch> \
-  -f <major>.<minor>.<patch>.Dockerfile .
+  -t python/ver:MAJOR.MINOR.PATCH \
+  -f MAJOR.MINOR.PATCH.Dockerfile .
 ```
 
-For `<major>.<minor>.<patch>` ≥ `3.10.5`.
+For `MAJOR.MINOR.PATCH` ≥ `3.10.5`.
 
 ### Run container
 
 self built:
 
 ```bash
-docker run -it --rm python-ver[:<major>.<minor>.<patch>]
+docker run -it --rm python/ver[:MAJOR.MINOR.PATCH]
 ```
 
 from the project's GitLab Container Registries:
@@ -88,17 +88,17 @@ from the project's GitLab Container Registries:
 *  [`python/ver`](https://gitlab.b-data.ch/python/ver/container_registry)  
     ```bash
     docker run -it --rm \
-      registry.gitlab.b-data.ch/python/ver[:<major>[.<minor>[.<patch>]]]
+      registry.gitlab.b-data.ch/python/ver[:MAJOR[.MINOR[.PATCH]]]
     ```
 *  [`python/base`](https://gitlab.b-data.ch/python/base/container_registry)  
     ```bash
     docker run -it --rm \
-      registry.gitlab.b-data.ch/python/base[:<major>[.<minor>[.<patch>]]]
+      registry.gitlab.b-data.ch/python/base[:MAJOR[.MINOR[.PATCH]]]
     ```
 *  [`python/scipy`](https://gitlab.b-data.ch/python/scipy/container_registry)
     ```bash
     docker run -it --rm \
-      registry.gitlab.b-data.ch/python/scipy[:<major>[.<minor>[.<patch>]]]
+      registry.gitlab.b-data.ch/python/scipy[:MAJOR[.MINOR[.PATCH]]]
     ```
 
 ## Contributing
