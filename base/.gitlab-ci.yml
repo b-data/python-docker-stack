@@ -200,7 +200,7 @@ trigger-latest-build:
   script:
     - curl -X POST -F token=$PYTHON_SCIPY -F ref=main https://gitlab.b-data.ch/api/v4/projects/289/trigger/pipeline
   rules:
-    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "main" && $UPDATE_MODE != "true"
       changes:
         - base/latest.Dockerfile
 
