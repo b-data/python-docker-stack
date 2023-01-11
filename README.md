@@ -2,11 +2,11 @@
 
 # Python docker stack
 
-Multi-arch (`linux/amd64`, `linux/arm64/v8`) docker images:
+Multi-arch (`linux/amd64`, `linux/arm64/v8`) images:
 
-*  [`registry.gitlab.b-data.ch/python/ver`](https://gitlab.b-data.ch/python/ver/container_registry)
-*  [`registry.gitlab.b-data.ch/python/base`](https://gitlab.b-data.ch/python/base/container_registry)
-*  [`registry.gitlab.b-data.ch/python/scipy`](https://gitlab.b-data.ch/python/scipy/container_registry)
+* [`registry.gitlab.b-data.ch/python/ver`](https://gitlab.b-data.ch/python/ver/container_registry)
+* [`registry.gitlab.b-data.ch/python/base`](https://gitlab.b-data.ch/python/base/container_registry)
+* [`registry.gitlab.b-data.ch/python/scipy`](https://gitlab.b-data.ch/python/scipy/container_registry)
 
 Images considered stable for Python versions ≥ 3.10.5.
 
@@ -17,29 +17,29 @@ Images considered stable for Python versions ≥ 3.10.5.
 
 The other images are counterparts to the JupyterLab images but **without**
 
-*  code-server
-*  IPython
-*  JupyterHub
-*  JupyterLab
-    *  JupyterLab Extensions
-    *  JupyterLab Integrations
-*  Jupyter Notebook
-    *  Jupyter Notebook Conversion
-*  LSP Server
-*  Oh My Zsh
-    *  Powerlevel10k Theme
-    *  MesloLGS NF Font
-*  Widgets
+* code-server
+* IPython
+* JupyterHub
+* JupyterLab
+  * JupyterLab Extensions
+  * JupyterLab Integrations
+* Jupyter Notebook
+  * Jupyter Notebook Conversion
+* LSP Server
+* Oh My Zsh
+  * Powerlevel10k Theme
+  * MesloLGS NF Font
+* Widgets
 
 and any configuration thereof.
 
 ## Table of Contents
 
-*  [Prerequisites](#prerequisites)
-*  [Install](#install)
-*  [Usage](#usage)
-*  [Contributing](#contributing)
-*  [License](#license)
+* [Prerequisites](#prerequisites)
+* [Install](#install)
+* [Usage](#usage)
+* [Contributing](#contributing)
+* [License](#license)
 
 ## Prerequisites
 
@@ -49,8 +49,8 @@ This projects requires an installation of docker.
 
 To install docker, follow the instructions for your platform:
 
-*  [Install Docker Engine | Docker Documentation > Supported platforms](https://docs.docker.com/engine/install/#supported-platforms)
-*  [Post-installation steps for Linux](https://docs.docker.com/engine/install/linux-postinstall/)
+* [Install Docker Engine | Docker Documentation > Supported platforms](https://docs.docker.com/engine/install/#supported-platforms)
+* [Post-installation steps for Linux](https://docs.docker.com/engine/install/linux-postinstall/)
 
 ## Usage
 
@@ -85,21 +85,21 @@ docker run -it --rm python/ver[:MAJOR.MINOR.PATCH]
 
 from the project's GitLab Container Registries:
 
-*  [`python/ver`](https://gitlab.b-data.ch/python/ver/container_registry)  
-    ```bash
-    docker run -it --rm \
-      registry.gitlab.b-data.ch/python/ver[:MAJOR[.MINOR[.PATCH]]]
-    ```
-*  [`python/base`](https://gitlab.b-data.ch/python/base/container_registry)  
-    ```bash
-    docker run -it --rm \
-      registry.gitlab.b-data.ch/python/base[:MAJOR[.MINOR[.PATCH]]]
-    ```
-*  [`python/scipy`](https://gitlab.b-data.ch/python/scipy/container_registry)
-    ```bash
-    docker run -it --rm \
-      registry.gitlab.b-data.ch/python/scipy[:MAJOR[.MINOR[.PATCH]]]
-    ```
+* [`python/ver`](https://gitlab.b-data.ch/python/ver/container_registry)  
+  ```bash
+  docker run -it --rm \
+    registry.gitlab.b-data.ch/python/ver[:MAJOR[.MINOR[.PATCH]]]
+  ```
+* [`python/base`](https://gitlab.b-data.ch/python/base/container_registry)  
+  ```bash
+  docker run -it --rm \
+    registry.gitlab.b-data.ch/python/base[:MAJOR[.MINOR[.PATCH]]]
+  ```
+* [`python/scipy`](https://gitlab.b-data.ch/python/scipy/container_registry)
+  ```bash
+  docker run -it --rm \
+    registry.gitlab.b-data.ch/python/scipy[:MAJOR[.MINOR[.PATCH]]]
+  ```
 
 ## Contributing
 
