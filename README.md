@@ -10,6 +10,10 @@ Multi-arch (`linux/amd64`, `linux/arm64/v8`) images:
 
 Images considered stable for Python versions ≥ 3.10.5.
 
+**Build chain**
+
+ver → base → scipy
+
 **Features**
 
 `registry.gitlab.b-data.ch/python/ver` serves as base image for
