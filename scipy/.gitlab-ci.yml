@@ -52,6 +52,7 @@ build:latest-linux-amd64:
       docker build --pull
       --build-arg BUILD_ON_IMAGE
       --build-arg PYTHON_VERSION
+      --build-arg BUILD_START=$(date -uIseconds)
       -t $CI_APP_REPO:$CI_APP_TAG-linux-amd64
       -t $CI_APP_REPO:latest-linux-amd64
       -f scipy/latest.Dockerfile .
@@ -71,6 +72,7 @@ build:latest-linux-arm64v8:
       docker build --pull
       --build-arg BUILD_ON_IMAGE
       --build-arg PYTHON_VERSION
+      --build-arg BUILD_START=$(date -uIseconds)
       -t $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
       -t $CI_APP_REPO:latest-linux-arm64v8
       -f scipy/latest.Dockerfile .
@@ -89,6 +91,7 @@ build:version-linux-amd64:
     - >
       docker build --pull
       --build-arg BUILD_ON_IMAGE
+      --build-arg BUILD_START=$(date -uIseconds)
       -t $CI_APP_REPO:$CI_APP_TAG-linux-amd64
       -f scipy/$PYTHON_VERSION.Dockerfile .
     - docker push $CI_APP_REPO:$CI_APP_TAG-linux-amd64
@@ -106,6 +109,7 @@ build:version-linux-arm64v8:
     - >
       docker build --pull
       --build-arg BUILD_ON_IMAGE
+      --build-arg BUILD_START=$(date -uIseconds)
       -t $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
       -f scipy/$PYTHON_VERSION.Dockerfile .
     - docker push $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
