@@ -16,7 +16,7 @@ ver → base → scipy
 
 **Features**
 
-`registry.gitlab.b-data.ch/python/ver` serves as base image for
+`registry.gitlab.b-data.ch/python/ver` serves as parent image for
 `registry.gitlab.b-data.ch/jupyterlab/python/base`.
 
 The other images are counterparts to the JupyterLab images but **without**
