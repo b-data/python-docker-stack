@@ -1,5 +1,8 @@
 [![minimal-readme compliant](https://img.shields.io/badge/readme%20style-minimal-brightgreen.svg)](https://github.com/RichardLitt/standard-readme/blob/master/example-readmes/minimal-readme.md) [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active) <a href="https://liberapay.com/benz0li/donate"><img src="https://liberapay.com/assets/widgets/donate.svg" alt="Donate using Liberapay" height="20"></a>
 
+| See the [CUDA-enabled Python docker stack](CUDA.md) for GPU accelerated images. |
+|---------------------------------------------------------------------------------|
+
 # Python docker stack
 
 Multi-arch (`linux/amd64`, `linux/arm64/v8`) images:
@@ -63,18 +66,18 @@ To install docker, follow the instructions for your platform:
 latest:
 
 ```bash
-cd ver && docker build \
+docker build \
   --build-arg PYTHON_VERSION=3.11.1 \
   -t python/ver \
-  -f latest.Dockerfile .
+  -f ver/latest.Dockerfile .
 ```
 
 version:
 
 ```bash
-cd ver && docker build \
+docker build \
   -t python/ver:MAJOR.MINOR.PATCH \
-  -f MAJOR.MINOR.PATCH.Dockerfile .
+  -f ver/MAJOR.MINOR.PATCH.Dockerfile .
 ```
 
 For `MAJOR.MINOR.PATCH` ≥ `3.10.5`.
