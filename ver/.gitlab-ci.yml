@@ -47,6 +47,7 @@
   before_script:
     - *before-script-all
     - *before-script-build
+  retry: 2
 
 .post:
   image: registry.gitlab.b-data.ch/docker/docker-buildx:latest
@@ -360,7 +361,7 @@ trigger-latest-cuda-devel-build:
     - apk upgrade --no-cache
     - apk add --update --no-cache curl
   script:
-    - curl -X POST -F token=$CUDA_PYTHON_VER -F ref=main -F "variables[CUDA_IMAGE_SUBTAG]=cudnn8-devel-$BASE_IMAGE$BASE_IMAGE_TAG" https://gitlab.b-data.ch/api/v4/projects/318/trigger/pipeline
+    - curl -X POST -F token=$CUDA_PYTHON_VER -F ref=main -F "variables[CUDA_IMAGE_SUBTAG]=$CUDA_IMAGE_DEVEL_SUBTAG" https://gitlab.b-data.ch/api/v4/projects/318/trigger/pipeline
   rules:
     - if: $CI_COMMIT_BRANCH == "main" && $CUDA_IMAGE_SUBTAG =~ /runtime/
       changes:
@@ -375,7 +376,7 @@ trigger-version-cuda-devel-build:
     - apk upgrade --no-cache
     - apk add --update --no-cache curl
   script:
-    - curl -X POST -F token=$CUDA_PYTHON_VER -F ref=freeze-version -F "variables[CUDA_IMAGE_SUBTAG]=cudnn8-devel-$BASE_IMAGE$BASE_IMAGE_TAG" https://gitlab.b-data.ch/api/v4/projects/318/trigger/pipeline
+    - curl -X POST -F token=$CUDA_PYTHON_VER -F ref=freeze-version -F "variables[CUDA_IMAGE_SUBTAG]=$CUDA_IMAGE_DEVEL_SUBTAG" https://gitlab.b-data.ch/api/v4/projects/318/trigger/pipeline
   rules:
     - if: $CI_COMMIT_BRANCH == "freeze-version" && $CUDA_IMAGE_SUBTAG =~ /runtime/
       changes:
