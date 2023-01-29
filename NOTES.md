@@ -36,7 +36,7 @@ The latest Python version is installed at `/usr/local/bin`, regardless of
 whether all packages – such as numba, tensorflow, etc. – are already compatible
 with it.
 
-# Notes on CUDA
+# Additional notes on CUDA
 
 The CUDA and OS versions are selected as follows:
 
