@@ -64,7 +64,7 @@ docker build \
   --build-arg CUDA_IMAGE=nvidia/cuda \
   --build-arg CUDA_VERSION=11.8.0 \
   --build-arg CUDA_IMAGE_SUBTAG=cudnn8-runtime-ubuntu20.04 \
-  --build-arg PYTHON_VERSION=3.11.1 \
+  --build-arg PYTHON_VERSION=3.11.2 \
   -t cuda/python/ver \
   -f ver/latest.Dockerfile .
 ```
