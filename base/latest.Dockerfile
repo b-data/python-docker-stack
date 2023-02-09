@@ -2,7 +2,7 @@ ARG BASE_IMAGE=debian
 ARG BASE_IMAGE_TAG=11
 ARG BUILD_ON_IMAGE=registry.gitlab.b-data.ch/python/ver
 ARG PYTHON_VERSION
-ARG GIT_VERSION=2.38.1
+ARG GIT_VERSION=2.39.1
 ARG GIT_LFS_VERSION=3.3.0
 ARG PANDOC_VERSION=2.19.2
 
@@ -17,11 +17,13 @@ ARG BUILD_ON_IMAGE
 ARG GIT_VERSION
 ARG GIT_LFS_VERSION
 ARG PANDOC_VERSION
+ARG BUILD_START
 
 ENV PARENT_IMAGE=${BUILD_ON_IMAGE}:${PYTHON_VERSION} \
     GIT_VERSION=${GIT_VERSION} \
     GIT_LFS_VERSION=${GIT_LFS_VERSION} \
-    PANDOC_VERSION=${PANDOC_VERSION}
+    PANDOC_VERSION=${PANDOC_VERSION} \
+    BUILD_DATE=${BUILD_START}
 
 ## Install Git
 COPY --from=gsi /usr/local /usr/local
@@ -52,7 +54,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     sudo \
     swig \
     tmux \
-    vim \
+    vim-tiny \
     wget \
     zsh \
     ## Additional git runtime dependencies
@@ -65,7 +67,9 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   && if [ -z "$PYTHON_VERSION" ]; then \
     apt-get -y install --no-install-recommends \
       python3-dev \
-      python3-distutils \
+      ## Install Python package installer
+      ## (dep: python3-distutils, python3-setuptools and python3-wheel)
+      python3-pip \
       ## Install venv module for python3
       python3-venv; \
     ## make some useful symlinks that are expected to exist
@@ -76,14 +80,15 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
       [ ! -e "/usr/bin/$dst" ]; \
       ln -svT "$src" "/usr/bin/$dst"; \
     done; \
+  else \
+    ## Force update pip, setuptools and wheel
+    curl -sLO https://bootstrap.pypa.io/get-pip.py; \
+    python get-pip.py \
+      pip \
+      setuptools \
+      wheel; \
+    rm get-pip.py; \
   fi \
-  ## Install/update pip, setuptools and wheel
-  && curl -sLO https://bootstrap.pypa.io/get-pip.py \
-  && python get-pip.py \
-    pip \
-    setuptools \
-    wheel \
-  && rm get-pip.py \
   ## Set default branch name to main
   && sudo git config --system init.defaultBranch main \
   ## Store passwords for one hour in memory

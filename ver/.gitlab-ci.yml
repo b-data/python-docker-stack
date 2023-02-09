@@ -1,7 +1,16 @@
 .env:
   variables:
-    PYTHON_VERSION: "3.11.0"
-    CUDA_VERSION: "11.7.1"
+    PYTHON_VERSION: "3.11.1"
+    CUDA_VERSION: "11.8.0"
+
+.before-script-all: &before-script-all
+  - |
+    if [[ ! -z "$CUDA_IMAGE_SUBTAG" ]]; then
+      export CUDA_IMAGE_FLAVOR=`echo $CUDA_IMAGE_SUBTAG | grep -o "runtime\|devel"`
+      if [[ "$CUDA_IMAGE_FLAVOR" == "devel" ]]; then
+        export CUPTI_AVAILABLE=1
+      fi
+    fi
 
 .before-script-build: &before-script-build
   - |
@@ -36,12 +45,16 @@
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: "/certs"
   before_script:
+    - *before-script-all
     - *before-script-build
+  retry: 2
 
 .post:
   image: registry.gitlab.b-data.ch/docker/docker-buildx:latest
   stage: .post
   extends: .env
+  before_script:
+    - *before-script-all
 
 build:latest-linux-amd64:
   extends: .build
@@ -57,14 +70,27 @@ build:latest-linux-amd64:
       --build-arg CUDA_VERSION
       --build-arg CUDA_IMAGE_SUBTAG
       --build-arg PYTHON_VERSION
-      -t $CI_APP_REPO:$CI_APP_TAG-linux-amd64
-      -t $CI_APP_REPO:latest-linux-amd64
+      --build-arg BUILD_START=$(date -uIseconds)
+      -t $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-amd64
+      -t $CI_APP_REPO:latest${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-amd64
       -f ver/latest.Dockerfile .
+    - |
+      if [[ ! -z "$CUDA_IMAGE" ]]; then
+        docker build \
+        --build-arg BUILD_ON_IMAGE=$CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-amd64 \
+        --build-arg CUDA_IMAGE_FLAVOR \
+        --build-arg CUPTI_AVAILABLE \
+        --build-arg BUILD_START=$(date -uIseconds) \
+        -t $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-amd64 \
+        -t $CI_APP_REPO:latest${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-amd64 \
+        -f cuda/latest.Dockerfile .
+      fi
     - docker push -a $CI_APP_REPO
   rules:
     - if: $CI_COMMIT_BRANCH == "main" && $CI_BUILD_PLATFORMS =~ /(linux\/amd64)/
       changes:
         - ver/latest.Dockerfile
+        - cuda/latest.Dockerfile
 
 build:latest-linux-arm64v8:
   extends: .build
@@ -80,14 +106,27 @@ build:latest-linux-arm64v8:
       --build-arg CUDA_VERSION
       --build-arg CUDA_IMAGE_SUBTAG
       --build-arg PYTHON_VERSION
-      -t $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
-      -t $CI_APP_REPO:latest-linux-arm64v8
+      --build-arg BUILD_START=$(date -uIseconds)
+      -t $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-arm64v8
+      -t $CI_APP_REPO:latest${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-arm64v8
       -f ver/latest.Dockerfile .
+    - |
+      if [[ ! -z "$CUDA_IMAGE" ]]; then
+        docker build \
+        --build-arg BUILD_ON_IMAGE=$CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-arm64v8 \
+        --build-arg CUDA_IMAGE_FLAVOR \
+        --build-arg CUPTI_AVAILABLE \
+        --build-arg BUILD_START=$(date -uIseconds) \
+        -t $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-arm64v8 \
+        -t $CI_APP_REPO:latest${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-arm64v8 \
+        -f cuda/latest.Dockerfile .
+      fi
     - docker push -a $CI_APP_REPO
   rules:
     - if: $CI_COMMIT_BRANCH == "main" && $CI_BUILD_PLATFORMS =~ /(linux\/arm64\/v8)/
       changes:
         - ver/latest.Dockerfile
+        - cuda/latest.Dockerfile
 
 build:version-linux-amd64:
   extends: .build
@@ -101,9 +140,20 @@ build:version-linux-amd64:
       --build-arg BASE_IMAGE_TAG
       --build-arg CUDA_IMAGE
       --build-arg CUDA_IMAGE_SUBTAG
-      -t $CI_APP_REPO:$CI_APP_TAG-linux-amd64
+      --build-arg BUILD_START=$(date -uIseconds)
+      -t $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-amd64
       -f ver/$PYTHON_VERSION.Dockerfile .
-    - docker push $CI_APP_REPO:$CI_APP_TAG-linux-amd64
+    - |
+      if [[ ! -z "$CUDA_IMAGE" ]]; then
+        docker build \
+        --build-arg BUILD_ON_IMAGE=$CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-amd64 \
+        --build-arg CUDA_IMAGE_FLAVOR \
+        --build-arg CUPTI_AVAILABLE \
+        --build-arg BUILD_START=$(date -uIseconds) \
+        -t $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-amd64 \
+        -f cuda/$PYTHON_VERSION.Dockerfile .
+      fi
+    - docker push $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-amd64
   rules:
     - if: $CI_COMMIT_BRANCH == "freeze-version" && $CI_BUILD_PLATFORMS =~ /(linux\/amd64)/
       changes:
@@ -121,9 +171,20 @@ build:version-linux-arm64v8:
       --build-arg BASE_IMAGE_TAG
       --build-arg CUDA_IMAGE
       --build-arg CUDA_IMAGE_SUBTAG
-      -t $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
+      --build-arg BUILD_START=$(date -uIseconds)
+      -t $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-arm64v8
       -f ver/$PYTHON_VERSION.Dockerfile .
-    - docker push $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
+    - |
+      if [[ ! -z "$CUDA_IMAGE" ]]; then
+        docker build \
+        --build-arg BUILD_ON_IMAGE=$CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-arm64v8 \
+        --build-arg CUDA_IMAGE_FLAVOR \
+        --build-arg CUPTI_AVAILABLE \
+        --build-arg BUILD_START=$(date -uIseconds) \
+        -t $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-arm64v8 \
+        -f cuda/$PYTHON_VERSION.Dockerfile .
+      fi
+    - docker push $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-arm64v8
   rules:
     - if: $CI_COMMIT_BRANCH == "freeze-version" && $CI_BUILD_PLATFORMS =~ /(linux\/arm64\/v8)/
       changes:
@@ -135,40 +196,71 @@ build-manifest:latest-linux-multiarch:
   script:
     - |
       for i in $OS_ARCH; do
-        export CI_MANIFEST_LIST="$CI_MANIFEST_LIST $CI_APP_REPO:$CI_APP_TAG-$i"
+        export CI_MANIFEST_LIST="$CI_MANIFEST_LIST $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-$i"
       done
     - |
-      docker manifest create $CI_APP_REPO:$CI_APP_TAG $CI_MANIFEST_LIST
+      docker manifest create $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR $CI_MANIFEST_LIST
       if echo $OS_ARCH | grep "linux-arm64v8" >/dev/null ; then
-        docker manifest annotate --variant v8 $CI_APP_REPO:$CI_APP_TAG \
-          $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
+        docker manifest annotate --variant v8 $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR \
+          $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-arm64v8
       fi
-      docker manifest push $CI_APP_REPO:$CI_APP_TAG
+      docker manifest push $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR
+      
+      docker manifest create $CI_APP_REPO:latest${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR $CI_MANIFEST_LIST
+      if echo $OS_ARCH | grep "linux-arm64v8" >/dev/null ; then
+        docker manifest annotate --variant v8 $CI_APP_REPO:latest${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR \
+          $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-arm64v8
+      fi
+      docker manifest push $CI_APP_REPO:latest${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR
+      
+      docker manifest create $CI_APP_REPO:$VERSION_MAJ_MIN${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR $CI_MANIFEST_LIST
+      if echo $OS_ARCH | grep "linux-arm64v8" >/dev/null ; then
+        docker manifest annotate --variant v8 $CI_APP_REPO:$VERSION_MAJ_MIN${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR \
+          $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-arm64v8
+      fi
+      docker manifest push $CI_APP_REPO:$VERSION_MAJ_MIN${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR
+      
+      docker manifest create $CI_APP_REPO:$VERSION_MAJ${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR $CI_MANIFEST_LIST
+      if echo $OS_ARCH | grep "linux-arm64v8" >/dev/null ; then
+        docker manifest annotate --variant v8 $CI_APP_REPO:$VERSION_MAJ${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR \
+          $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-arm64v8
+      fi
+      docker manifest push $CI_APP_REPO:$VERSION_MAJ${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR
     - |
-      docker manifest create $CI_APP_REPO:latest $CI_MANIFEST_LIST
-      if echo $OS_ARCH | grep "linux-arm64v8" >/dev/null ; then
-        docker manifest annotate --variant v8 $CI_APP_REPO:latest \
-          $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
+      if [[ "$CUDA_IMAGE_FLAVOR" == "runtime" ]]; then
+        docker manifest create $CI_APP_REPO:$CI_APP_TAG $CI_MANIFEST_LIST
+        if echo $OS_ARCH | grep "linux-arm64v8" >/dev/null ; then
+          docker manifest annotate --variant v8 $CI_APP_REPO:$CI_APP_TAG \
+            $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-arm64v8
+        fi
+        docker manifest push $CI_APP_REPO:$CI_APP_TAG
+        
+        docker manifest create $CI_APP_REPO:latest $CI_MANIFEST_LIST
+        if echo $OS_ARCH | grep "linux-arm64v8" >/dev/null ; then
+          docker manifest annotate --variant v8 $CI_APP_REPO:latest \
+            $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-arm64v8
+        fi
+        docker manifest push $CI_APP_REPO:latest
+        
+        docker manifest create $CI_APP_REPO:$VERSION_MAJ_MIN $CI_MANIFEST_LIST
+        if echo $OS_ARCH | grep "linux-arm64v8" >/dev/null ; then
+          docker manifest annotate --variant v8 $CI_APP_REPO:$VERSION_MAJ_MIN \
+            $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-arm64v8
+        fi
+        docker manifest push $CI_APP_REPO:$VERSION_MAJ_MIN
+        
+        docker manifest create $CI_APP_REPO:$VERSION_MAJ $CI_MANIFEST_LIST
+        if echo $OS_ARCH | grep "linux-arm64v8" >/dev/null ; then
+          docker manifest annotate --variant v8 $CI_APP_REPO:$VERSION_MAJ \
+            $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-arm64v8
+        fi
+        docker manifest push $CI_APP_REPO:$VERSION_MAJ
       fi
-      docker manifest push $CI_APP_REPO:latest
-    - |
-      docker manifest create $CI_APP_REPO:$VERSION_MAJ_MIN $CI_MANIFEST_LIST
-      if echo $OS_ARCH | grep "linux-arm64v8" >/dev/null ; then
-        docker manifest annotate --variant v8 $CI_APP_REPO:$VERSION_MAJ_MIN \
-          $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
-      fi
-      docker manifest push $CI_APP_REPO:$VERSION_MAJ_MIN
-    - |
-      docker manifest create $CI_APP_REPO:$VERSION_MAJ $CI_MANIFEST_LIST
-      if echo $OS_ARCH | grep "linux-arm64v8" >/dev/null ; then
-        docker manifest annotate --variant v8 $CI_APP_REPO:$VERSION_MAJ \
-          $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
-      fi
-      docker manifest push $CI_APP_REPO:$VERSION_MAJ
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
       changes:
         - ver/latest.Dockerfile
+        - cuda/latest.Dockerfile
 
 build-manifest:version-linux-multiarch:
   extends: .build
@@ -176,15 +268,24 @@ build-manifest:version-linux-multiarch:
   script:
     - |
       for i in $OS_ARCH; do
-        export CI_MANIFEST_LIST="$CI_MANIFEST_LIST $CI_APP_REPO:$CI_APP_TAG-$i"
+        export CI_MANIFEST_LIST="$CI_MANIFEST_LIST $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-$i"
       done
     - |
-      docker manifest create $CI_APP_REPO:$CI_APP_TAG $CI_MANIFEST_LIST
+      docker manifest create $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR $CI_MANIFEST_LIST
       if echo $OS_ARCH | grep "linux-arm64v8" >/dev/null ; then
-        docker manifest annotate --variant v8 $CI_APP_REPO:$CI_APP_TAG \
-          $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
+        docker manifest annotate --variant v8 $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR \
+          $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-arm64v8
       fi
-      docker manifest push $CI_APP_REPO:$CI_APP_TAG
+      docker manifest push $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR
+    - |
+      if [[ "$CUDA_IMAGE_FLAVOR" == "runtime" ]]; then
+        docker manifest create $CI_APP_REPO:$CI_APP_TAG $CI_MANIFEST_LIST
+        if echo $OS_ARCH | grep "linux-arm64v8" >/dev/null ; then
+          docker manifest annotate --variant v8 $CI_APP_REPO:$CI_APP_TAG \
+            $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-arm64v8
+        fi
+        docker manifest push $CI_APP_REPO:$CI_APP_TAG
+      fi
   rules:
     - if: $CI_COMMIT_BRANCH == "freeze-version"
       changes:
@@ -200,9 +301,12 @@ trigger-latest-build:
   script:
     - curl -X POST -F token=$PYTHON_BASE -F ref=main https://gitlab.b-data.ch/api/v4/projects/288/trigger/pipeline
   rules:
+    - if: $CUDA_IMAGE
+      when: never
     - if: $CI_COMMIT_BRANCH == "main"
       changes:
         - ver/latest.Dockerfile
+        - cuda/latest.Dockerfile
 
 trigger-version-build:
   extends: .post
@@ -214,6 +318,66 @@ trigger-version-build:
   script:
     - curl -X POST -F token=$PYTHON_BASE -F ref=freeze-version https://gitlab.b-data.ch/api/v4/projects/288/trigger/pipeline
   rules:
+    - if: $CUDA_IMAGE
+      when: never
     - if: $CI_COMMIT_BRANCH == "freeze-version"
+      changes:
+        - ver/$PYTHON_VERSION.Dockerfile
+
+trigger-latest-cuda-build:
+  extends: .post
+  stage: .post
+  needs: ["build-manifest:latest-linux-multiarch"]
+  before_script:
+    - apk upgrade --no-cache
+    - apk add --update --no-cache curl
+  script:
+    - curl -X POST -F token=$CUDA_PYTHON_BASE -F ref=main https://gitlab.b-data.ch/api/v4/projects/319/trigger/pipeline
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" && $CUDA_IMAGE_SUBTAG =~ /runtime/
+      changes:
+        - ver/latest.Dockerfile
+        - cuda/latest.Dockerfile
+
+trigger-version-cuda-build:
+  extends: .post
+  stage: .post
+  needs: ["build-manifest:version-linux-multiarch"]
+  before_script:
+    - apk upgrade --no-cache
+    - apk add --update --no-cache curl
+  script:
+    - curl -X POST -F token=$CUDA_PYTHON_BASE -F ref=freeze-version https://gitlab.b-data.ch/api/v4/projects/319/trigger/pipeline
+  rules:
+    - if: $CI_COMMIT_BRANCH == "freeze-version" && $CUDA_IMAGE_SUBTAG =~ /runtime/
+      changes:
+        - ver/$PYTHON_VERSION.Dockerfile
+
+trigger-latest-cuda-devel-build:
+  extends: .post
+  stage: .post
+  needs: ["build-manifest:latest-linux-multiarch"]
+  before_script:
+    - apk upgrade --no-cache
+    - apk add --update --no-cache curl
+  script:
+    - curl -X POST -F token=$CUDA_PYTHON_VER -F ref=main -F "variables[CUDA_IMAGE_SUBTAG]=$CUDA_IMAGE_DEVEL_SUBTAG" https://gitlab.b-data.ch/api/v4/projects/318/trigger/pipeline
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" && $CUDA_IMAGE_SUBTAG =~ /runtime/
+      changes:
+        - ver/latest.Dockerfile
+        - cuda/latest.Dockerfile
+
+trigger-version-cuda-devel-build:
+  extends: .post
+  stage: .post
+  needs: ["build-manifest:version-linux-multiarch"]
+  before_script:
+    - apk upgrade --no-cache
+    - apk add --update --no-cache curl
+  script:
+    - curl -X POST -F token=$CUDA_PYTHON_VER -F ref=freeze-version -F "variables[CUDA_IMAGE_SUBTAG]=$CUDA_IMAGE_DEVEL_SUBTAG" https://gitlab.b-data.ch/api/v4/projects/318/trigger/pipeline
+  rules:
+    - if: $CI_COMMIT_BRANCH == "freeze-version" && $CUDA_IMAGE_SUBTAG =~ /runtime/
       changes:
         - ver/$PYTHON_VERSION.Dockerfile
