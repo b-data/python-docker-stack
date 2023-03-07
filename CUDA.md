@@ -1,6 +1,6 @@
 # CUDA-enabled Python docker stack
 
-GPU accelerated, multi-arch (`linux/amd64`, `linux/arm64/v8`) images:
+GPU accelerated, multi-arch (`linux/amd64`, `linux/arm64/v8`) docker images:
 
 * [`registry.gitlab.b-data.ch/cuda/python/ver`](https://gitlab.b-data.ch/cuda/python/ver/container_registry)
 * [`registry.gitlab.b-data.ch/cuda/python/base`](https://gitlab.b-data.ch/cuda/python/base/container_registry)
@@ -60,10 +60,10 @@ latest:
 ```bash
 docker build \
   --build-arg BASE_IMAGE=ubuntu \
-  --build-arg BASE_IMAGE_TAG=20.04 \
+  --build-arg BASE_IMAGE_TAG=22.04 \
   --build-arg CUDA_IMAGE=nvidia/cuda \
   --build-arg CUDA_VERSION=11.8.0 \
-  --build-arg CUDA_IMAGE_SUBTAG=cudnn8-runtime-ubuntu20.04 \
+  --build-arg CUDA_IMAGE_SUBTAG=cudnn8-runtime-ubuntu22.04 \
   --build-arg PYTHON_VERSION=3.11.2 \
   -t cuda/python/ver \
   -f ver/latest.Dockerfile .
@@ -86,9 +86,9 @@ version:
 ```bash
 docker build \
   --build-arg BASE_IMAGE=ubuntu \
-  --build-arg BASE_IMAGE_TAG=20.04 \
+  --build-arg BASE_IMAGE_TAG=22.04 \
   --build-arg CUDA_IMAGE=nvidia/cuda \
-  --build-arg CUDA_IMAGE_SUBTAG=cudnn8-runtime-ubuntu20.04 \
+  --build-arg CUDA_IMAGE_SUBTAG=cudnn8-runtime-ubuntu22.04 \
   -t cuda/python/ver:MAJOR.MINOR.PATCH \
   -f ver/MAJOR.MINOR.PATCH.Dockerfile .
 ```
