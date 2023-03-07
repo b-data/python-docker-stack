@@ -38,6 +38,16 @@ RUN cpuBlasLib="$(update-alternatives --query \
     apt-get -y install --no-install-recommends \
       libnvinfer${dev:-[0-9]+} \
       libnvinfer-plugin${dev:-[0-9]+}; \
+    ## TensorFlow versions < 2.12 expect TensorRT libraries version 7
+    ## Create symlink when only TensorRT libraries version > 7 are available
+    trtRunLib=$(ls -d /usr/lib/$(uname -m)-linux-gnu/* | \
+      grep 'libnvinfer.so.[0-9]\+$'); \
+    trtPluLib=$(ls -d /usr/lib/$(uname -m)-linux-gnu/* | \
+      grep 'libnvinfer_plugin.so.[0-9]\+$'); \
+    if [ "$(echo $trtRunLib | sed -n 's/.*\([0-9]\+\)/\1/p')" -gt "7" ]; then \
+      ln -rs $trtRunLib /usr/lib/$(uname -m)-linux-gnu/libnvinfer.so.7; \
+      ln -rs $trtPluLib /usr/lib/$(uname -m)-linux-gnu/libnvinfer_plugin.so.7; \
+    fi \
   fi \
   ## Clean up
   && rm -rf /var/lib/apt/lists/*
