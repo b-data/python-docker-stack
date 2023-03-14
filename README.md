@@ -7,9 +7,9 @@
 
 Multi-arch (`linux/amd64`, `linux/arm64/v8`) docker images:
 
-* [`registry.gitlab.b-data.ch/python/ver`](https://gitlab.b-data.ch/python/ver/container_registry)
-* [`registry.gitlab.b-data.ch/python/base`](https://gitlab.b-data.ch/python/base/container_registry)
-* [`registry.gitlab.b-data.ch/python/scipy`](https://gitlab.b-data.ch/python/scipy/container_registry)
+* [`glcr.b-data.ch/python/ver`](https://gitlab.b-data.ch/python/ver/container_registry)
+* [`glcr.b-data.ch/python/base`](https://gitlab.b-data.ch/python/base/container_registry)
+* [`glcr.b-data.ch/python/scipy`](https://gitlab.b-data.ch/python/scipy/container_registry)
 
 Images considered stable for Python versions ≥ 3.10.5.
 
@@ -19,8 +19,8 @@ ver → base → scipy
 
 **Features**
 
-`registry.gitlab.b-data.ch/python/ver` serves as parent image for
-`registry.gitlab.b-data.ch/jupyterlab/python/base`.
+`glcr.b-data.ch/python/ver` serves as parent image for
+`glcr.b-data.ch/jupyterlab/python/base`.
 
 The other images are counterparts to the JupyterLab images but **without**
 
@@ -95,17 +95,17 @@ from the project's GitLab Container Registries:
 * [`python/ver`](https://gitlab.b-data.ch/python/ver/container_registry)  
   ```bash
   docker run -it --rm \
-    registry.gitlab.b-data.ch/python/ver[:MAJOR[.MINOR[.PATCH]]]
+    glcr.b-data.ch/python/ver[:MAJOR[.MINOR[.PATCH]]]
   ```
 * [`python/base`](https://gitlab.b-data.ch/python/base/container_registry)  
   ```bash
   docker run -it --rm \
-    registry.gitlab.b-data.ch/python/base[:MAJOR[.MINOR[.PATCH]]]
+    glcr.b-data.ch/python/base[:MAJOR[.MINOR[.PATCH]]]
   ```
 * [`python/scipy`](https://gitlab.b-data.ch/python/scipy/container_registry)
   ```bash
   docker run -it --rm \
-    registry.gitlab.b-data.ch/python/scipy[:MAJOR[.MINOR[.PATCH]]]
+    glcr.b-data.ch/python/scipy[:MAJOR[.MINOR[.PATCH]]]
   ```
 
 ## Contributing

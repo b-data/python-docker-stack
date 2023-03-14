@@ -1,4 +1,4 @@
-ARG BUILD_ON_IMAGE=registry.gitlab.b-data.ch/python/base
+ARG BUILD_ON_IMAGE=glcr.b-data.ch/python/base
 ARG PYTHON_VERSION
 ARG QUARTO_VERSION=1.2.335
 ARG CTAN_REPO=https://mirror.ctan.org/systems/texlive/tlnet

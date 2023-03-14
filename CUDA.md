@@ -2,9 +2,9 @@
 
 GPU accelerated, multi-arch (`linux/amd64`, `linux/arm64/v8`) docker images:
 
-* [`registry.gitlab.b-data.ch/cuda/python/ver`](https://gitlab.b-data.ch/cuda/python/ver/container_registry)
-* [`registry.gitlab.b-data.ch/cuda/python/base`](https://gitlab.b-data.ch/cuda/python/base/container_registry)
-* [`registry.gitlab.b-data.ch/cuda/python/scipy`](https://gitlab.b-data.ch/cuda/python/scipy/container_registry)
+* [`glcr.b-data.ch/cuda/python/ver`](https://gitlab.b-data.ch/cuda/python/ver/container_registry)
+* [`glcr.b-data.ch/cuda/python/base`](https://gitlab.b-data.ch/cuda/python/base/container_registry)
+* [`glcr.b-data.ch/cuda/python/scipy`](https://gitlab.b-data.ch/cuda/python/scipy/container_registry)
 
 Images available for Python versions ≥ 3.11.1.
 
@@ -14,8 +14,8 @@ The same as the [Python docker stack](README.md#python-docker-stack).
 
 **Features**
 
-`registry.gitlab.b-data.ch/cuda/python/ver:*-devel` serves as parent image for
-`registry.gitlab.b-data.ch/jupyterlab/cuda/python/base`.
+`glcr.b-data.ch/cuda/python/ver:*-devel` serves as parent image for
+`glcr.b-data.ch/jupyterlab/cuda/python/base`.
 
 Otherwise the same as the [Python docker stack](README.md#python-docker-stack) plus
 
@@ -121,19 +121,19 @@ from the project's GitLab Container Registries:
   ```bash
   docker run -it --rm \
     --gpus '"device=all"' \
-    registry.gitlab.b-data.ch/cuda/python/ver[:MAJOR[.MINOR[.PATCH]]]
+    glcr.b-data.ch/cuda/python/ver[:MAJOR[.MINOR[.PATCH]]]
   ```
 * [`cuda/python/base`](https://gitlab.b-data.ch/cuda/python/base/container_registry)  
   ```bash
   docker run -it --rm \
     --gpus '"device=all"' \
-    registry.gitlab.b-data.ch/cuda/python/base[:MAJOR[.MINOR[.PATCH]]]
+    glcr.b-data.ch/cuda/python/base[:MAJOR[.MINOR[.PATCH]]]
   ```
 * [`cuda/python/scipy`](https://gitlab.b-data.ch/cuda/python/scipy/container_registry)  
   ```bash
   docker run -it --rm \
     --gpus '"device=all"' \
-    registry.gitlab.b-data.ch/cuda/python/scipy[:MAJOR[.MINOR[.PATCH]]]
+    glcr.b-data.ch/cuda/python/scipy[:MAJOR[.MINOR[.PATCH]]]
   ```
 
 See [Notes](NOTES.md) for tweaks.
