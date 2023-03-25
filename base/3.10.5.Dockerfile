@@ -80,11 +80,11 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     wheel \
   && rm get-pip.py \
   ## Set default branch name to main
-  && sudo git config --system init.defaultBranch main \
+  && git config --system init.defaultBranch main \
   ## Store passwords for one hour in memory
   && git config --system credential.helper "cache --timeout=3600" \
   ## Merge the default branch from the default remote when "git pull" is run
-  && sudo git config --system pull.rebase false \
+  && git config --system pull.rebase false \
   ## Install pandoc
   && curl -sLO https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-1-${dpkgArch}.deb \
   && dpkg -i pandoc-${PANDOC_VERSION}-1-${dpkgArch}.deb \
