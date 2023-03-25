@@ -23,6 +23,10 @@ ENV CUDA_HOME=${CUDA_HOME} \
 RUN cpuBlasLib="$(update-alternatives --query \
   libblas.so.3-$(uname -m)-linux-gnu | grep Value | cut -f2 -d' ')" \
   && dpkgArch="$(dpkg --print-architecture)" \
+  ## Unminimise if the system has been minimised
+  && if [ ${CUDA_IMAGE_FLAVOR} = "devel" -a $(command -v unminimize) ]; then \
+    yes | unminimize; \
+  fi \
   ## NVBLAS log configuration
   && touch /var/log/nvblas.log \
   && chown :users /var/log/nvblas.log \
@@ -44,10 +48,10 @@ RUN cpuBlasLib="$(update-alternatives --query \
       libnvinfer-plugin${dev:-${LIBNVINFER_VERSION_MAJ}}=${LIBNVINFER_VERSION}+cuda${CUDA_VERSION_MAJ_MIN} \
       libnvinfer${LIBNVINFER_VERSION_MAJ}=${LIBNVINFER_VERSION}+cuda${CUDA_VERSION_MAJ_MIN} \
       libnvinfer-plugin${LIBNVINFER_VERSION_MAJ}=${LIBNVINFER_VERSION}+cuda${CUDA_VERSION_MAJ_MIN}; \
-      echo "Package: libnvinfer*" >> /etc/apt/preferences.d/libnvinfer; \
-      echo "Pin: version ${LIBNVINFER_VERSION}+cuda${CUDA_VERSION_MAJ_MIN}" \
-        >> /etc/apt/preferences.d/libnvinfer; \
-      echo "Pin-Priority: 501" >> /etc/apt/preferences.d/libnvinfer; \
+    echo "Package: libnvinfer*" >> /etc/apt/preferences.d/libnvinfer; \
+    echo "Pin: version ${LIBNVINFER_VERSION}+cuda${CUDA_VERSION_MAJ_MIN}" \
+      >> /etc/apt/preferences.d/libnvinfer; \
+    echo "Pin-Priority: 501" >> /etc/apt/preferences.d/libnvinfer; \
     ## TensorFlow versions < 2.12 expect TensorRT libraries version 7
     ## Create symlink when only TensorRT libraries version > 7 are available
     trtRunLib=$(ls -d /usr/lib/$(uname -m)-linux-gnu/* | \
