@@ -74,6 +74,8 @@ docker build \
 ```bash
 docker build \
   --build-arg BUILD_ON_IMAGE=cuda/python/ver \
+  --build-arg LIBNVINFER_VERSION=8.5.3-1 \
+  --build-arg LIBNVINFER_VERSION_MAJ=8 \
   --build-arg CUDA_IMAGE_FLAVOR=runtime \
   -t cuda/python/ver \
   -f cuda/latest.Dockerfile .
@@ -97,7 +99,7 @@ docker build \
 
 ```bash
 docker build \
-  --build-arg BUILD_ON_IMAGE=cuda/python/ver \
+  --build-arg BUILD_ON_IMAGE=cuda/python/ver:MAJOR.MINOR.PATCH \
   --build-arg CUDA_IMAGE_FLAVOR=runtime \
   -t cuda/python/ver:MAJOR.MINOR.PATCH \
   -f cuda/MAJOR.MINOR.PATCH.Dockerfile .
@@ -117,23 +119,16 @@ docker run -it --rm \
 
 from the project's GitLab Container Registries:
 
-* [`cuda/python/ver`](https://gitlab.b-data.ch/cuda/python/ver/container_registry)  
-  ```bash
-  docker run -it --rm \
-    --gpus '"device=all"' \
-    glcr.b-data.ch/cuda/python/ver[:MAJOR[.MINOR[.PATCH]]]
-  ```
-* [`cuda/python/base`](https://gitlab.b-data.ch/cuda/python/base/container_registry)  
-  ```bash
-  docker run -it --rm \
-    --gpus '"device=all"' \
-    glcr.b-data.ch/cuda/python/base[:MAJOR[.MINOR[.PATCH]]]
-  ```
-* [`cuda/python/scipy`](https://gitlab.b-data.ch/cuda/python/scipy/container_registry)  
-  ```bash
-  docker run -it --rm \
-    --gpus '"device=all"' \
-    glcr.b-data.ch/cuda/python/scipy[:MAJOR[.MINOR[.PATCH]]]
-  ```
+```bash
+docker run -it --rm \
+  --gpus '"device=all"' \
+  IMAGE[:MAJOR[.MINOR[.PATCH]]]
+```
+
+`IMAGE` being one of
+
+* [`glcr.b-data.ch/cuda/python/ver`](https://gitlab.b-data.ch/cuda/python/ver/container_registry)
+* [`glcr.b-data.ch/cuda/python/base`](https://gitlab.b-data.ch/cuda/python/base/container_registry)
+* [`glcr.b-data.ch/cuda/python/scipy`](https://gitlab.b-data.ch/cuda/python/scipy/container_registry)
 
 See [Notes](NOTES.md) for tweaks.

@@ -92,21 +92,16 @@ docker run -it --rm python/ver[:MAJOR.MINOR.PATCH]
 
 from the project's GitLab Container Registries:
 
-* [`python/ver`](https://gitlab.b-data.ch/python/ver/container_registry)  
-  ```bash
-  docker run -it --rm \
-    glcr.b-data.ch/python/ver[:MAJOR[.MINOR[.PATCH]]]
-  ```
-* [`python/base`](https://gitlab.b-data.ch/python/base/container_registry)  
-  ```bash
-  docker run -it --rm \
-    glcr.b-data.ch/python/base[:MAJOR[.MINOR[.PATCH]]]
-  ```
-* [`python/scipy`](https://gitlab.b-data.ch/python/scipy/container_registry)
-  ```bash
-  docker run -it --rm \
-    glcr.b-data.ch/python/scipy[:MAJOR[.MINOR[.PATCH]]]
-  ```
+```bash
+docker run -it --rm \
+  IMAGE[:MAJOR[.MINOR[.PATCH]]]
+```
+
+`IMAGE` being one of
+
+* [`glcr.b-data.ch/python/ver`](https://gitlab.b-data.ch/python/ver/container_registry)
+* [`glcr.b-data.ch/python/base`](https://gitlab.b-data.ch/python/base/container_registry)
+* [`glcr.b-data.ch/python/scipy`](https://gitlab.b-data.ch/python/scipy/container_registry)
 
 ## Contributing
 
