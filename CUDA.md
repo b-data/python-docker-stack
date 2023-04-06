@@ -1,10 +1,10 @@
 # CUDA-enabled Python docker stack
 
-GPU accelerated, multi-arch (`linux/amd64`, `linux/arm64/v8`) images:
+GPU accelerated, multi-arch (`linux/amd64`, `linux/arm64/v8`) docker images:
 
-* [`registry.gitlab.b-data.ch/cuda/python/ver`](https://gitlab.b-data.ch/cuda/python/ver/container_registry)
-* [`registry.gitlab.b-data.ch/cuda/python/base`](https://gitlab.b-data.ch/cuda/python/base/container_registry)
-* [`registry.gitlab.b-data.ch/cuda/python/scipy`](https://gitlab.b-data.ch/cuda/python/scipy/container_registry)
+* [`glcr.b-data.ch/cuda/python/ver`](https://gitlab.b-data.ch/cuda/python/ver/container_registry)
+* [`glcr.b-data.ch/cuda/python/base`](https://gitlab.b-data.ch/cuda/python/base/container_registry)
+* [`glcr.b-data.ch/cuda/python/scipy`](https://gitlab.b-data.ch/cuda/python/scipy/container_registry)
 
 Images available for Python versions ≥ 3.11.1.
 
@@ -14,8 +14,8 @@ The same as the [Python docker stack](README.md#python-docker-stack).
 
 **Features**
 
-`registry.gitlab.b-data.ch/cuda/python/ver:*-devel` serves as parent image for
-`registry.gitlab.b-data.ch/jupyterlab/cuda/python/base`.
+`glcr.b-data.ch/cuda/python/ver:*-devel` serves as parent image for
+`glcr.b-data.ch/jupyterlab/cuda/python/base`.
 
 Otherwise the same as the [Python docker stack](README.md#python-docker-stack) plus
 
@@ -60,11 +60,11 @@ latest:
 ```bash
 docker build \
   --build-arg BASE_IMAGE=ubuntu \
-  --build-arg BASE_IMAGE_TAG=20.04 \
+  --build-arg BASE_IMAGE_TAG=22.04 \
   --build-arg CUDA_IMAGE=nvidia/cuda \
   --build-arg CUDA_VERSION=11.8.0 \
-  --build-arg CUDA_IMAGE_SUBTAG=cudnn8-runtime-ubuntu20.04 \
-  --build-arg PYTHON_VERSION=3.11.1 \
+  --build-arg CUDA_IMAGE_SUBTAG=cudnn8-runtime-ubuntu22.04 \
+  --build-arg PYTHON_VERSION=3.11.2 \
   -t cuda/python/ver \
   -f ver/latest.Dockerfile .
 ```
@@ -74,6 +74,8 @@ docker build \
 ```bash
 docker build \
   --build-arg BUILD_ON_IMAGE=cuda/python/ver \
+  --build-arg LIBNVINFER_VERSION=8.5.3-1 \
+  --build-arg LIBNVINFER_VERSION_MAJ=8 \
   --build-arg CUDA_IMAGE_FLAVOR=runtime \
   -t cuda/python/ver \
   -f cuda/latest.Dockerfile .
@@ -86,9 +88,9 @@ version:
 ```bash
 docker build \
   --build-arg BASE_IMAGE=ubuntu \
-  --build-arg BASE_IMAGE_TAG=20.04 \
+  --build-arg BASE_IMAGE_TAG=22.04 \
   --build-arg CUDA_IMAGE=nvidia/cuda \
-  --build-arg CUDA_IMAGE_SUBTAG=cudnn8-runtime-ubuntu20.04 \
+  --build-arg CUDA_IMAGE_SUBTAG=cudnn8-runtime-ubuntu22.04 \
   -t cuda/python/ver:MAJOR.MINOR.PATCH \
   -f ver/MAJOR.MINOR.PATCH.Dockerfile .
 ```
@@ -97,7 +99,7 @@ docker build \
 
 ```bash
 docker build \
-  --build-arg BUILD_ON_IMAGE=cuda/python/ver \
+  --build-arg BUILD_ON_IMAGE=cuda/python/ver:MAJOR.MINOR.PATCH \
   --build-arg CUDA_IMAGE_FLAVOR=runtime \
   -t cuda/python/ver:MAJOR.MINOR.PATCH \
   -f cuda/MAJOR.MINOR.PATCH.Dockerfile .
@@ -117,23 +119,16 @@ docker run -it --rm \
 
 from the project's GitLab Container Registries:
 
-* [`cuda/python/ver`](https://gitlab.b-data.ch/cuda/python/ver/container_registry)  
-  ```bash
-  docker run -it --rm \
-    --gpus '"device=all"' \
-    registry.gitlab.b-data.ch/cuda/python/ver[:MAJOR[.MINOR[.PATCH]]]
-  ```
-* [`cuda/python/base`](https://gitlab.b-data.ch/cuda/python/base/container_registry)  
-  ```bash
-  docker run -it --rm \
-    --gpus '"device=all"' \
-    registry.gitlab.b-data.ch/cuda/python/base[:MAJOR[.MINOR[.PATCH]]]
-  ```
-* [`cuda/python/scipy`](https://gitlab.b-data.ch/cuda/python/scipy/container_registry)  
-  ```bash
-  docker run -it --rm \
-    --gpus '"device=all"' \
-    registry.gitlab.b-data.ch/cuda/python/scipy[:MAJOR[.MINOR[.PATCH]]]
-  ```
+```bash
+docker run -it --rm \
+  --gpus '"device=all"' \
+  IMAGE[:MAJOR[.MINOR[.PATCH]]]
+```
+
+`IMAGE` being one of
+
+* [`glcr.b-data.ch/cuda/python/ver`](https://gitlab.b-data.ch/cuda/python/ver/container_registry)
+* [`glcr.b-data.ch/cuda/python/base`](https://gitlab.b-data.ch/cuda/python/base/container_registry)
+* [`glcr.b-data.ch/cuda/python/scipy`](https://gitlab.b-data.ch/cuda/python/scipy/container_registry)
 
 See [Notes](NOTES.md) for tweaks.

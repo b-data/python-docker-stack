@@ -5,6 +5,9 @@ ARG NVBLAS_CONFIG_FILE=/etc/nvblas.conf
 
 FROM ${BUILD_ON_IMAGE}
 
+ARG LIBNVINFER_VERSION
+ARG LIBNVINFER_VERSION_MAJ
+
 ARG CUDA_IMAGE_FLAVOR
 ARG CUPTI_AVAILABLE
 ARG BUILD_START
@@ -20,6 +23,10 @@ ENV CUDA_HOME=${CUDA_HOME} \
 RUN cpuBlasLib="$(update-alternatives --query \
   libblas.so.3-$(uname -m)-linux-gnu | grep Value | cut -f2 -d' ')" \
   && dpkgArch="$(dpkg --print-architecture)" \
+  ## Unminimise if the system has been minimised
+  && if [ ${CUDA_IMAGE_FLAVOR} = "devel" -a $(command -v unminimize) ]; then \
+    yes | unminimize; \
+  fi \
   ## NVBLAS log configuration
   && touch /var/log/nvblas.log \
   && chown :users /var/log/nvblas.log \
@@ -34,10 +41,29 @@ RUN cpuBlasLib="$(update-alternatives --query \
     ## Install development libraries and headers
     ## if devel-flavor of CUDA image is used
     if [ ${CUDA_IMAGE_FLAVOR} = "devel" ]; then dev="-dev"; fi; \
+    CUDA_VERSION_MAJ_MIN=$(echo ${CUDA_VERSION} | cut -c 1-4); \
     apt-get update; \
     apt-get -y install --no-install-recommends \
-      libnvinfer${dev:-[0-9]+} \
-      libnvinfer-plugin${dev:-[0-9]+}; \
+      libnvinfer${dev:-${LIBNVINFER_VERSION_MAJ}}=${LIBNVINFER_VERSION}+cuda${CUDA_VERSION_MAJ_MIN} \
+      libnvinfer-plugin${dev:-${LIBNVINFER_VERSION_MAJ}}=${LIBNVINFER_VERSION}+cuda${CUDA_VERSION_MAJ_MIN} \
+      libnvinfer${LIBNVINFER_VERSION_MAJ}=${LIBNVINFER_VERSION}+cuda${CUDA_VERSION_MAJ_MIN} \
+      libnvinfer-plugin${LIBNVINFER_VERSION_MAJ}=${LIBNVINFER_VERSION}+cuda${CUDA_VERSION_MAJ_MIN}; \
+    ## Keep apt from auto upgrading the libnvinfer packages
+    apt-mark hold \
+      libnvinfer${dev:-${LIBNVINFER_VERSION_MAJ}} \
+      libnvinfer-plugin${dev:-${LIBNVINFER_VERSION_MAJ}} \
+      libnvinfer${LIBNVINFER_VERSION_MAJ} \
+      libnvinfer-plugin${LIBNVINFER_VERSION_MAJ}; \
+    ## TensorFlow versions < 2.12 expect TensorRT libraries version 7
+    ## Create symlink when only TensorRT libraries version > 7 are available
+    trtRunLib=$(ls -d /usr/lib/$(uname -m)-linux-gnu/* | \
+      grep 'libnvinfer.so.[0-9]\+$'); \
+    trtPluLib=$(ls -d /usr/lib/$(uname -m)-linux-gnu/* | \
+      grep 'libnvinfer_plugin.so.[0-9]\+$'); \
+    if [ "$(echo $trtRunLib | sed -n 's/.*.so.\([0-9]\+\)/\1/p')" -gt "7" ]; then \
+      ln -rs $trtRunLib /usr/lib/$(uname -m)-linux-gnu/libnvinfer.so.7; \
+      ln -rs $trtPluLib /usr/lib/$(uname -m)-linux-gnu/libnvinfer_plugin.so.7; \
+    fi \
   fi \
   ## Clean up
   && rm -rf /var/lib/apt/lists/*
