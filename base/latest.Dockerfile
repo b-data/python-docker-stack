@@ -4,7 +4,7 @@ ARG BUILD_ON_IMAGE=glcr.b-data.ch/python/ver
 ARG PYTHON_VERSION
 ARG GIT_VERSION=2.40.1
 ARG GIT_LFS_VERSION=3.3.0
-ARG PANDOC_VERSION=2.19.2
+ARG PANDOC_VERSION=3.1.1
 
 FROM glcr.b-data.ch/git/gsi/${GIT_VERSION}/${BASE_IMAGE}:${BASE_IMAGE_TAG} as gsi
 FROM glcr.b-data.ch/git-lfs/glfsi:${GIT_LFS_VERSION} as glfsi
