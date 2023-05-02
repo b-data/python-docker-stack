@@ -26,11 +26,6 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     ghostscript \
     qpdf \
     texinfo \
-    ## For tables wheels
-    libblosc-dev \
-    libbz2-dev \
-    libhdf5-dev \
-    liblzo2-dev \
   ## Install quarto
   && curl -sLO https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-${dpkgArch}.tar.gz \
   && mkdir -p /opt/quarto \
@@ -98,7 +93,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     #ipympl \
     #ipywidgets \
     matplotlib \
-    #numba \
+    numba \
     numexpr \
     numpy \
     pandas \
