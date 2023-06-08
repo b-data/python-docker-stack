@@ -1,6 +1,6 @@
 .env:
   variables:
-    PYTHON_VERSION: "3.10.12"
+    PYTHON_VERSION: "3.11.3"
     CUDA_VERSION: "11.8.0"
     LIBNVINFER_VERSION: "8.5.3-1"
     LIBNVINFER_VERSION_MAJ: "8"
@@ -289,13 +289,6 @@ build-manifest:version-linux-multiarch:
           $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-arm64v8
       fi
       docker manifest push $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR
-
-      docker manifest create $CI_APP_REPO:$VERSION_MAJ_MIN${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR $CI_MANIFEST_LIST
-      if echo $OS_ARCH | grep "linux-arm64v8" >/dev/null ; then
-        docker manifest annotate --variant v8 $CI_APP_REPO:$VERSION_MAJ_MIN${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR \
-          $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-arm64v8
-      fi
-      docker manifest push $CI_APP_REPO:$VERSION_MAJ_MIN${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR
     - |
       if [[ "$CUDA_IMAGE_FLAVOR" == "runtime" ]]; then
         docker manifest create $CI_APP_REPO:$CI_APP_TAG $CI_MANIFEST_LIST
@@ -304,13 +297,6 @@ build-manifest:version-linux-multiarch:
             $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-arm64v8
         fi
         docker manifest push $CI_APP_REPO:$CI_APP_TAG
-
-        docker manifest create $CI_APP_REPO:$VERSION_MAJ_MIN $CI_MANIFEST_LIST
-        if echo $OS_ARCH | grep "linux-arm64v8" >/dev/null ; then
-          docker manifest annotate --variant v8 $CI_APP_REPO:$VERSION_MAJ_MIN \
-            $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-arm64v8
-        fi
-        docker manifest push $CI_APP_REPO:$VERSION_MAJ_MIN
       fi
   rules:
     - if: $CI_COMMIT_BRANCH == "freeze-version"
