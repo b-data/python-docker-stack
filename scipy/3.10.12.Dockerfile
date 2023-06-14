@@ -80,6 +80,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     /etc/fonts/conf.d/09-texlive.conf \
   && fc-cache -fsv \
   ## Install Python packages
+  && export PIP_BREAK_SYSTEM_PACKAGES=1 \
   && pip install \
     altair \
     beautifulsoup4 \
