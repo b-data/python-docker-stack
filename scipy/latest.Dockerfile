@@ -1,6 +1,6 @@
 ARG BUILD_ON_IMAGE=glcr.b-data.ch/python/base
 ARG PYTHON_VERSION
-ARG QUARTO_VERSION=1.3.361
+ARG QUARTO_VERSION=1.3.450
 ARG CTAN_REPO=https://mirror.ctan.org/systems/texlive/tlnet
 
 FROM ${BUILD_ON_IMAGE}:${PYTHON_VERSION}
@@ -80,6 +80,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     /etc/fonts/conf.d/09-texlive.conf \
   && fc-cache -fsv \
   ## Install Python packages
+  && export PIP_BREAK_SYSTEM_PACKAGES=1 \
   && pip install \
     altair \
     beautifulsoup4 \

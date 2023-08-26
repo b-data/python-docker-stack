@@ -1,9 +1,9 @@
 ARG BASE_IMAGE=debian
-ARG BASE_IMAGE_TAG=11
+ARG BASE_IMAGE_TAG=12
 ARG BUILD_ON_IMAGE=glcr.b-data.ch/python/ver
 ARG PYTHON_VERSION
-ARG GIT_VERSION=2.41.0
-ARG GIT_LFS_VERSION=3.3.0
+ARG GIT_VERSION=2.42.0
+ARG GIT_LFS_VERSION=3.4.0
 ARG PANDOC_VERSION=3.1.1
 
 FROM glcr.b-data.ch/git/gsi/${GIT_VERSION}/${BASE_IMAGE}:${BASE_IMAGE_TAG} as gsi
@@ -57,13 +57,13 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     vim-tiny \
     wget \
     zsh \
-    ## Additional git runtime dependencies
+    ## Git: Additional runtime dependencies
     libcurl3-gnutls \
     liberror-perl \
-    ## Additional git runtime recommendations
+    ## Git: Additional runtime recommendations
     less \
     ssh-client \
-  ## Additional python-dev dependencies
+  ## Python: Additional dev dependencies
   && if [ -z "$PYTHON_VERSION" ]; then \
     apt-get -y install --no-install-recommends \
       python3-dev \
@@ -89,11 +89,11 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
       wheel; \
     rm get-pip.py; \
   fi \
-  ## Set default branch name to main
+  ## Git: Set default branch name to main
   && git config --system init.defaultBranch main \
-  ## Store passwords for one hour in memory
+  ## Git: Store passwords for one hour in memory
   && git config --system credential.helper "cache --timeout=3600" \
-  ## Merge the default branch from the default remote when "git pull" is run
+  ## Git: Merge the default branch from the default remote when "git pull" is run
   && git config --system pull.rebase false \
   ## Install pandoc
   && curl -sLO https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-1-${dpkgArch}.deb \
