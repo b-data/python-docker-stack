@@ -1,6 +1,6 @@
 .env:
   variables:
-    PYTHON_VERSION: "3.11.4"
+    PYTHON_VERSION: "3.11.5"
     CUDA_VERSION: "11.8.0"
     LIBNVINFER_VERSION: "8.5.3-1"
     LIBNVINFER_VERSION_MAJ: "8"
