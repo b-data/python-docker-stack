@@ -27,6 +27,8 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     librsvg2-bin \
     qpdf \
     texinfo \
+    ## For h5py wheels
+    libhdf5-dev \
   ## Install quarto
   && curl -sLO https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-${dpkgArch}.tar.gz \
   && mkdir -p /opt/quarto \
@@ -95,7 +97,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     #ipympl \
     #ipywidgets \
     matplotlib \
-    numba \
+    #numba \
     numexpr \
     numpy \
     pandas \
