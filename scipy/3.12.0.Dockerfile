@@ -1,7 +1,7 @@
 ARG BUILD_ON_IMAGE=glcr.b-data.ch/python/base
 ARG PYTHON_VERSION=3.12.0
 ARG QUARTO_VERSION=1.3.450
-ARG CTAN_REPO=https://www.texlive.info/tlnet-archive/2023/12/07/tlnet
+ARG CTAN_REPO=https://www.texlive.info/tlnet-archive/2023/12/08/tlnet
 
 FROM ${BUILD_ON_IMAGE}:${PYTHON_VERSION}
 
