@@ -1,10 +1,10 @@
 .env:
   variables:
-    PYTHON_VERSION: "3.11.7"
+    PYTHON_VERSION: "3.12.0"
     CUDA_VERSION: "11.8.0"
     LIBNVINFER_VERSION: "8.5.3-1"
     LIBNVINFER_VERSION_MAJ: "8"
-    TAG_VERSION_MAJ_MIN: "true"
+    TAG_VERSION_MAJ_MIN: "false"
     TAG_VERSION_MAJ: "false"
 
 .before-script-all: &before-script-all
