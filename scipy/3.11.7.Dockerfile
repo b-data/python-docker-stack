@@ -1,9 +1,9 @@
 ARG BUILD_ON_IMAGE=glcr.b-data.ch/python/base
 ARG PYTHON_VERSION=3.11.7
-ARG QUARTO_VERSION=1.3.450
-ARG CTAN_REPO=https://mirror.ctan.org/systems/texlive/tlnet
+ARG QUARTO_VERSION=1.4.549
+ARG CTAN_REPO=https://www.texlive.info/tlnet-archive/2024/02/06/tlnet
 
-FROM ${BUILD_ON_IMAGE}:${PYTHON_VERSION}
+FROM ${BUILD_ON_IMAGE}${PYTHON_VERSION:+:$PYTHON_VERSION}
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -12,7 +12,7 @@ ARG QUARTO_VERSION
 ARG CTAN_REPO
 ARG BUILD_START
 
-ENV PARENT_IMAGE=${BUILD_ON_IMAGE}:${PYTHON_VERSION} \
+ENV PARENT_IMAGE=${BUILD_ON_IMAGE}${PYTHON_VERSION:+:$PYTHON_VERSION} \
     QUARTO_VERSION=${QUARTO_VERSION} \
     CTAN_REPO=${CTAN_REPO} \
     BUILD_DATE=${BUILD_START}
@@ -33,9 +33,9 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   && tar -xzf quarto-${QUARTO_VERSION}-linux-${dpkgArch}.tar.gz -C /opt/quarto --no-same-owner --strip-components=1 \
   && rm quarto-${QUARTO_VERSION}-linux-${dpkgArch}.tar.gz \
   ## Remove quarto pandoc
-  && rm /opt/quarto/bin/tools/pandoc \
+  && rm /opt/quarto/bin/tools/$(uname -m)/pandoc \
   ## Link to system pandoc
-  && ln -s /usr/bin/pandoc /opt/quarto/bin/tools/pandoc \
+  && ln -s /usr/bin/pandoc /opt/quarto/bin/tools/$(uname -m)/pandoc \
   ## Tell APT about the TeX Live installation
   ## by building a dummy package using equivs
   && apt-get install -y --no-install-recommends equivs \

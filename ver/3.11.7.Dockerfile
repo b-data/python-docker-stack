@@ -6,7 +6,7 @@ ARG BLAS=libopenblas-dev
 ARG CUDA_VERSION=11.8.0
 ARG PYTHON_VERSION=3.11.7
 
-FROM glcr.b-data.ch/python/psi/${PYTHON_VERSION}/${BASE_IMAGE}:${BASE_IMAGE_TAG} as psi
+FROM glcr.b-data.ch/python/psi${PYTHON_VERSION:+/}${PYTHON_VERSION:-:none}${PYTHON_VERSION:+/$BASE_IMAGE}${PYTHON_VERSION:+:$BASE_IMAGE_TAG} as psi
 
 FROM ${CUDA_IMAGE:-$BASE_IMAGE}:${CUDA_IMAGE:+$CUDA_VERSION}${CUDA_IMAGE:+-}${CUDA_IMAGE_SUBTAG:-$BASE_IMAGE_TAG}
 
@@ -53,6 +53,19 @@ RUN apt-get update \
     unzip \
     zip \
     zlib1g-dev \
+  && if [ -z "$PYTHON_VERSION" ]; then \
+    ## Install system Python
+    apt-get -y install --no-install-recommends \
+      python3; \
+    ## make some useful symlinks that are expected to exist
+    ## ("/usr/bin/python" and friends)
+    for src in pydoc3 python3 python3-config; do \
+      dst="$(echo "$src" | tr -d 3)"; \
+      if [ -s "/usr/bin/$src" ] && [ ! -e "/usr/bin/$dst" ]; then \
+        ln -svT "$src" "/usr/bin/$dst"; \
+      fi \
+    done; \
+  fi \
   ## Update locale
   && sed -i "s/# $LANG/$LANG/g" /etc/locale.gen \
   && locale-gen \

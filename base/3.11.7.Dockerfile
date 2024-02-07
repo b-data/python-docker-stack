@@ -3,13 +3,13 @@ ARG BASE_IMAGE_TAG=12
 ARG BUILD_ON_IMAGE=glcr.b-data.ch/python/ver
 ARG PYTHON_VERSION=3.11.7
 ARG GIT_VERSION=2.43.0
-ARG GIT_LFS_VERSION=3.4.0
-ARG PANDOC_VERSION=3.1.1
+ARG GIT_LFS_VERSION=3.4.1
+ARG PANDOC_VERSION=3.1.11
 
 FROM glcr.b-data.ch/git/gsi/${GIT_VERSION}/${BASE_IMAGE}:${BASE_IMAGE_TAG} as gsi
 FROM glcr.b-data.ch/git-lfs/glfsi:${GIT_LFS_VERSION} as glfsi
 
-FROM ${BUILD_ON_IMAGE}:${PYTHON_VERSION}
+FROM ${BUILD_ON_IMAGE}${PYTHON_VERSION:+:$PYTHON_VERSION}
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -19,7 +19,7 @@ ARG GIT_LFS_VERSION
 ARG PANDOC_VERSION
 ARG BUILD_START
 
-ENV PARENT_IMAGE=${BUILD_ON_IMAGE}:${PYTHON_VERSION} \
+ENV PARENT_IMAGE=${BUILD_ON_IMAGE}${PYTHON_VERSION:+:$PYTHON_VERSION} \
     GIT_VERSION=${GIT_VERSION} \
     GIT_LFS_VERSION=${GIT_LFS_VERSION} \
     PANDOC_VERSION=${PANDOC_VERSION} \
@@ -77,9 +77,9 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     ## ("/usr/bin/python" and friends)
     for src in pydoc3 python3 python3-config; do \
       dst="$(echo "$src" | tr -d 3)"; \
-      [ -s "/usr/bin/$src" ]; \
-      [ ! -e "/usr/bin/$dst" ]; \
-      ln -svT "$src" "/usr/bin/$dst"; \
+      if [ -s "/usr/bin/$src" ] && [ ! -e "/usr/bin/$dst" ]; then \
+        ln -svT "$src" "/usr/bin/$dst"; \
+      fi \
     done; \
   else \
     ## Force update pip, setuptools and wheel
