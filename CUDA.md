@@ -76,7 +76,7 @@ docker build \
   --build-arg BUILD_ON_IMAGE=cuda/python/ver \
   --build-arg CUDNN_VERSION=8.9.7.29 \
   --build-arg CUDNN_CUDA_VERSION_MAJ_MIN=12.2 \
-  --build-arg LIBNVINFER_VERSION=10.0.0.6 \
+  --build-arg LIBNVINFER_VERSION=10.0.1.6 \
   --build-arg LIBNVINFER_CUDA_VERSION_MAJ_MIN=12.4 \
   --build-arg CUDA_IMAGE_FLAVOR=runtime \
   -t cuda/python/ver \
