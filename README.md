@@ -67,7 +67,7 @@ To install docker, follow the instructions for your platform:
 
 ```bash
 docker build \
-  --build-arg PYTHON_VERSION=3.12.2 \
+  --build-arg PYTHON_VERSION=3.12.3 \
   -t python/ver \
   -f ver/latest.Dockerfile .
 ```
@@ -113,4 +113,6 @@ This project follows the
 
 ## License
 
-[MIT](LICENSE) © 2022 b-data GmbH
+Copyright © 2022 b-data GmbH
+
+Distributed under the terms of the [MIT License](LICENSE).
