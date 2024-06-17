@@ -46,6 +46,7 @@ and any configuration thereof.
 * [Install](#install)
 * [Usage](#usage)
 * [Contributing](#contributing)
+* [Support](#support)
 * [License](#license)
 
 ## Prerequisites
@@ -110,6 +111,13 @@ PRs accepted.
 This project follows the
 [Contributor Covenant](https://www.contributor-covenant.org)
 [Code of Conduct](CODE_OF_CONDUCT.md).
+
+## Support
+
+Community support: Open a new disussion
+[here](https://github.com/orgs/b-data/discussions).
+
+Commercial support: Contact b-data by [email](mailto:support@b-data.ch).
 
 ## License
 
