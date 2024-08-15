@@ -214,7 +214,7 @@ RUN cpuBlasLib="$(update-alternatives --query \
   && trtPluLib=$(ls -d /usr/lib/$(uname -m)-linux-gnu/* | \
     grep 'libnvinfer_plugin.so.[0-9]\+$') \
   && if [ "$(echo $trtRunLib | sed -n 's/.*.so.\([0-9]\+\)/\1/p')" -gt "8" ]; then \
-    ## TensorFlow versions < 2.17 expect TensorRT libraries version 8.6.1/8.6.2
+    ## TensorFlow versions < 2.18 expect TensorRT libraries version 8.6.1/8.6.2
     if [ "$dpkgArch" = "amd64" ]; then \
       ln -rs $trtRunLib /usr/lib/$(uname -m)-linux-gnu/libnvinfer.so.8.6.1; \
       ln -rs $trtPluLib /usr/lib/$(uname -m)-linux-gnu/libnvinfer_plugin.so.8.6.1; \
