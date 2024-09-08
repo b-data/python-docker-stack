@@ -1,6 +1,6 @@
 ARG BUILD_ON_IMAGE=glcr.b-data.ch/python/base
 ARG PYTHON_VERSION
-ARG QUARTO_VERSION=1.5.56
+ARG QUARTO_VERSION=1.5.57
 ARG CTAN_REPO=https://mirror.ctan.org/systems/texlive/tlnet
 
 FROM ${BUILD_ON_IMAGE}${PYTHON_VERSION:+:$PYTHON_VERSION}
@@ -10,11 +10,11 @@ ARG DEBIAN_FRONTEND=noninteractive
 ARG BUILD_ON_IMAGE
 ARG QUARTO_VERSION
 ARG CTAN_REPO
+ARG CTAN_REPO_BUILD_LATEST
 ARG BUILD_START
 
 ENV PARENT_IMAGE=${BUILD_ON_IMAGE}${PYTHON_VERSION:+:$PYTHON_VERSION} \
     QUARTO_VERSION=${QUARTO_VERSION} \
-    CTAN_REPO=${CTAN_REPO} \
     BUILD_DATE=${BUILD_START}
 
 ENV PATH=/opt/TinyTeX/bin/linux:/opt/quarto/bin:$PATH
@@ -49,6 +49,9 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   && apt-get -y purge equivs \
   && apt-get -y autoremove \
   ## Admin-based install of TinyTeX
+  && CTAN_REPO_ORIG=${CTAN_REPO} \
+  && CTAN_REPO=${CTAN_REPO_BUILD_LATEST:-$CTAN_REPO} \
+  && export CTAN_REPO \
   && wget -qO- "https://yihui.org/tinytex/install-unx.sh" \
     | sh -s - --admin --no-path \
   && mv ${HOME}/.TinyTeX /opt/TinyTeX \
@@ -75,6 +78,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     oberdiek \
     titling \
   && tlmgr path add \
+  && tlmgr option repository ${CTAN_REPO_ORIG} \
   && chown -R root:${NB_GID} /opt/TinyTeX \
   && chmod -R g+w /opt/TinyTeX \
   && chmod -R g+wx /opt/TinyTeX/bin \
@@ -125,3 +129,5 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     ${HOME}/.config \
     ${HOME}/.local \
     ${HOME}/.wget-hsts
+
+ENV CTAN_REPO=${CTAN_REPO}
