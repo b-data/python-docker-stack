@@ -159,7 +159,6 @@ RUN cpuBlasLib="$(update-alternatives --query \
     cuda-cudart-dev-${CUDA_VERSION_MAJ_MIN_DASH} \
   ## Unminimise if the system has been minimised
   && if [ ${CUDA_IMAGE_FLAVOR} = "devel" -a $(command -v unminimize) ]; then \
-  apt-mark hold \
     sed -i "s/apt-get upgrade/#apt-get upgrade/g" "$(which unminimize)"; \
     yes | unminimize; \
     sed -i "s/#apt-get upgrade/apt-get upgrade/g" "$(which unminimize)"; \
