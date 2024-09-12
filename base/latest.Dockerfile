@@ -91,12 +91,10 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     done; \
   else \
     ## Force update pip, setuptools and wheel
-    curl -sLO https://bootstrap.pypa.io/get-pip.py; \
-    python get-pip.py \
+    pip install --upgrade --force-reinstall \
       pip \
       setuptools \
       wheel; \
-    rm get-pip.py; \
   fi \
   ## Git: Set default branch name to main
   && git config --system init.defaultBranch main \
