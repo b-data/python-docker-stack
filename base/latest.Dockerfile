@@ -90,11 +90,8 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
       fi \
     done; \
   else \
-    ## Force update pip, setuptools and wheel
-    pip install --upgrade --force-reinstall \
-      pip \
-      setuptools \
-      wheel; \
+    ## Force update pip
+    pip install --upgrade --force-reinstall pip; \
   fi \
   ## Git: Set default branch name to main
   && git config --system init.defaultBranch main \
