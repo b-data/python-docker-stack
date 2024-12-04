@@ -1,7 +1,7 @@
 ARG BASE_IMAGE=debian
 ARG BASE_IMAGE_TAG=12
 ARG BUILD_ON_IMAGE=glcr.b-data.ch/python/ver
-ARG PYTHON_VERSION=3.11.10
+ARG PYTHON_VERSION=3.12.7
 ARG NEOVIM_VERSION=0.10.2
 ARG GIT_VERSION=2.47.1
 ARG GIT_LFS_VERSION=3.6.0
@@ -91,12 +91,10 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     done; \
   else \
     ## Force update pip, setuptools and wheel
-    curl -sLO https://bootstrap.pypa.io/get-pip.py; \
-    python get-pip.py \
+    pip install --upgrade --force-reinstall \
       pip \
       setuptools \
       wheel; \
-    rm get-pip.py; \
   fi \
   ## Git: Set default branch name to main
   && git config --system init.defaultBranch main \
