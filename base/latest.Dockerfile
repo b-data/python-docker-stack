@@ -2,10 +2,10 @@ ARG BASE_IMAGE=debian
 ARG BASE_IMAGE_TAG=12
 ARG BUILD_ON_IMAGE=glcr.b-data.ch/python/ver
 ARG PYTHON_VERSION
-ARG NEOVIM_VERSION=0.10.1
-ARG GIT_VERSION=2.46.2
-ARG GIT_LFS_VERSION=3.5.1
-ARG PANDOC_VERSION=3.2
+ARG NEOVIM_VERSION=0.10.2
+ARG GIT_VERSION=2.47.1
+ARG GIT_LFS_VERSION=3.6.0
+ARG PANDOC_VERSION=3.4
 
 FROM glcr.b-data.ch/neovim/nvsi:${NEOVIM_VERSION} AS nvsi
 FROM glcr.b-data.ch/git/gsi/${GIT_VERSION}/${BASE_IMAGE}:${BASE_IMAGE_TAG} as gsi
@@ -90,11 +90,8 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
       fi \
     done; \
   else \
-    ## Force update pip, setuptools and wheel
-    pip install --upgrade --force-reinstall \
-      pip \
-      setuptools \
-      wheel; \
+    ## Force update pip
+    pip install --upgrade --force-reinstall pip; \
   fi \
   ## Git: Set default branch name to main
   && git config --system init.defaultBranch main \
