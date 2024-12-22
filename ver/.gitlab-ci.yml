@@ -84,7 +84,7 @@ build:latest-linux-amd64:
       -t $CI_APP_REPO:latest${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-amd64
       -f ver/latest.Dockerfile .
     - |
-      if [[ ! -z "$CUDA_IMAGE" && "$CUDA_IMAGE_SUBTAG" != *"base"* ]]; then
+      if [[ ! -z "$CUDA_IMAGE" && "$CUDA_IMAGE_FLAVOR" != "base" ]]; then
         docker build \
         --build-arg CUDNN_VERSION_AMD64 \
         --build-arg CUDNN_CUDA_VERSION_MAJ_MIN_AMD64 \
@@ -125,7 +125,7 @@ build:latest-linux-arm64v8:
       -t $CI_APP_REPO:latest${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-arm64v8
       -f ver/latest.Dockerfile .
     - |
-      if [[ ! -z "$CUDA_IMAGE" && "$CUDA_IMAGE_SUBTAG" != *"base"* ]]; then
+      if [[ ! -z "$CUDA_IMAGE" && "$CUDA_IMAGE_FLAVOR" != "base" ]]; then
         docker build \
         --build-arg CUDNN_VERSION_ARM64 \
         --build-arg CUDNN_CUDA_VERSION_MAJ_MIN_ARM64 \
@@ -163,7 +163,7 @@ build:version-linux-amd64:
       -t $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-amd64
       -f ver/$PYTHON_VERSION.Dockerfile .
     - |
-      if [[ ! -z "$CUDA_IMAGE" && "$CUDA_IMAGE_SUBTAG" != *"base"* ]]; then
+      if [[ ! -z "$CUDA_IMAGE" && "$CUDA_IMAGE_FLAVOR" != "base" ]]; then
         docker build \
         --build-arg BUILD_ON_IMAGE=$CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-amd64 \
         --build-arg CUDA_IMAGE_FLAVOR \
@@ -195,7 +195,7 @@ build:version-linux-arm64v8:
       -t $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-arm64v8
       -f ver/$PYTHON_VERSION.Dockerfile .
     - |
-      if [[ ! -z "$CUDA_IMAGE" && "$CUDA_IMAGE_SUBTAG" != *"base"* ]]; then
+      if [[ ! -z "$CUDA_IMAGE" && "$CUDA_IMAGE_FLAVOR" != "base" ]]; then
         docker build \
         --build-arg BUILD_ON_IMAGE=$CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-arm64v8 \
         --build-arg CUDA_IMAGE_FLAVOR \
