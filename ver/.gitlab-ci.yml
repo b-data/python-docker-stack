@@ -84,7 +84,7 @@ build:latest-linux-amd64:
       -t $CI_APP_REPO:latest${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-amd64
       -f ver/latest.Dockerfile .
     - |
-      if [[ ! -z "$CUDA_IMAGE" ]]; then
+      if [[ ! -z "$CUDA_IMAGE" && "$CUDA_IMAGE_SUBTAG" != *"base"* ]]; then
         docker build \
         --build-arg CUDNN_VERSION_AMD64 \
         --build-arg CUDNN_CUDA_VERSION_MAJ_MIN_AMD64 \
@@ -125,7 +125,7 @@ build:latest-linux-arm64v8:
       -t $CI_APP_REPO:latest${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-arm64v8
       -f ver/latest.Dockerfile .
     - |
-      if [[ ! -z "$CUDA_IMAGE" ]]; then
+      if [[ ! -z "$CUDA_IMAGE" && "$CUDA_IMAGE_SUBTAG" != *"base"* ]]; then
         docker build \
         --build-arg CUDNN_VERSION_ARM64 \
         --build-arg CUDNN_CUDA_VERSION_MAJ_MIN_ARM64 \
@@ -163,7 +163,7 @@ build:version-linux-amd64:
       -t $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-amd64
       -f ver/$PYTHON_VERSION.Dockerfile .
     - |
-      if [[ ! -z "$CUDA_IMAGE" ]]; then
+      if [[ ! -z "$CUDA_IMAGE" && "$CUDA_IMAGE_SUBTAG" != *"base"* ]]; then
         docker build \
         --build-arg BUILD_ON_IMAGE=$CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-amd64 \
         --build-arg CUDA_IMAGE_FLAVOR \
@@ -195,7 +195,7 @@ build:version-linux-arm64v8:
       -t $CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-arm64v8
       -f ver/$PYTHON_VERSION.Dockerfile .
     - |
-      if [[ ! -z "$CUDA_IMAGE" ]]; then
+      if [[ ! -z "$CUDA_IMAGE" && "$CUDA_IMAGE_SUBTAG" != *"base"* ]]; then
         docker build \
         --build-arg BUILD_ON_IMAGE=$CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-arm64v8 \
         --build-arg CUDA_IMAGE_FLAVOR \
@@ -409,7 +409,7 @@ trigger-version-cuda-build:
       changes:
         - ver/$PYTHON_VERSION.Dockerfile
 
-trigger-latest-cuda-devel-build:
+trigger-latest-cuda-self-build:
   extends: .post
   stage: .post
   needs: ["build-manifest:latest-linux-multiarch"]
@@ -417,6 +417,7 @@ trigger-latest-cuda-devel-build:
     - apk upgrade --no-cache
     - apk add --update --no-cache curl
   script:
+    - curl -X POST -F token=$CUDA_PYTHON_VER -F ref=main -F "variables[CUDA_IMAGE_SUBTAG]=$CUDA_IMAGE_BASE_SUBTAG" https://gitlab.b-data.ch/api/v4/projects/318/trigger/pipeline
     - curl -X POST -F token=$CUDA_PYTHON_VER -F ref=main -F "variables[CUDA_IMAGE_SUBTAG]=$CUDA_IMAGE_DEVEL_SUBTAG" https://gitlab.b-data.ch/api/v4/projects/318/trigger/pipeline
   rules:
     - if: $CI_COMMIT_BRANCH == "main" && $CUDA_IMAGE_SUBTAG =~ /runtime/
@@ -424,7 +425,7 @@ trigger-latest-cuda-devel-build:
         - ver/latest.Dockerfile
         - cuda/latest.Dockerfile
 
-trigger-version-cuda-devel-build:
+trigger-version-cuda-self-build:
   extends: .post
   stage: .post
   needs: ["build-manifest:version-linux-multiarch"]
@@ -432,6 +433,7 @@ trigger-version-cuda-devel-build:
     - apk upgrade --no-cache
     - apk add --update --no-cache curl
   script:
+    - curl -X POST -F token=$CUDA_PYTHON_VER -F ref=freeze-version -F "variables[CUDA_IMAGE_SUBTAG]=$CUDA_BASE_DEVEL_SUBTAG" https://gitlab.b-data.ch/api/v4/projects/318/trigger/pipeline
     - curl -X POST -F token=$CUDA_PYTHON_VER -F ref=freeze-version -F "variables[CUDA_IMAGE_SUBTAG]=$CUDA_IMAGE_DEVEL_SUBTAG" https://gitlab.b-data.ch/api/v4/projects/318/trigger/pipeline
   rules:
     - if: $CI_COMMIT_BRANCH == "freeze-version" && $CUDA_IMAGE_SUBTAG =~ /runtime/
