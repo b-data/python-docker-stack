@@ -12,7 +12,7 @@
 .before-script-all: &before-script-all
   - |
     if [[ ! -z "$CUDA_IMAGE_SUBTAG" ]]; then
-      export CUDA_IMAGE_FLAVOR=`echo $CUDA_IMAGE_SUBTAG | grep -o "runtime\|devel"`
+      export CUDA_IMAGE_FLAVOR=`echo $CUDA_IMAGE_SUBTAG | grep -o "base\|runtime\|devel"`
       if [[ "$CUDA_IMAGE_FLAVOR" == "devel" ]]; then
         export CUPTI_AVAILABLE=1
       fi
