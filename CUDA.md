@@ -131,4 +131,4 @@ docker run -it --rm \
 * [`glcr.b-data.ch/cuda/python/base`](https://gitlab.b-data.ch/cuda/python/base/container_registry)
 * [`glcr.b-data.ch/cuda/python/scipy`](https://gitlab.b-data.ch/cuda/python/scipy/container_registry)
 
-See [Notes](NOTES.md) for tweaks.
+See [CUDA Notes](CUDA_NOTES.md) for tweaks.
