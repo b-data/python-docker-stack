@@ -62,7 +62,7 @@ docker build \
   --build-arg BASE_IMAGE=ubuntu \
   --build-arg BASE_IMAGE_TAG=22.04 \
   --build-arg CUDA_IMAGE=nvidia/cuda \
-  --build-arg CUDA_VERSION=12.6.3 \
+  --build-arg CUDA_VERSION=12.8.0 \
   --build-arg CUDA_IMAGE_SUBTAG=runtime-ubuntu22.04 \
   --build-arg PYTHON_VERSION=3.13.1 \
   -t cuda/python/ver \
@@ -74,7 +74,7 @@ docker build \
 ```bash
 docker build \
   --build-arg BUILD_ON_IMAGE=cuda/python/ver \
-  --build-arg CUDNN_VERSION=9.5.1.17 \
+  --build-arg CUDNN_VERSION=9.7.0.66 \
   --build-arg CUDNN_CUDA_VERSION_MAJ_MIN=12.0 \
   --build-arg CUDA_IMAGE_FLAVOR=runtime \
   -t cuda/python/ver \
@@ -131,4 +131,4 @@ docker run -it --rm \
 * [`glcr.b-data.ch/cuda/python/base`](https://gitlab.b-data.ch/cuda/python/base/container_registry)
 * [`glcr.b-data.ch/cuda/python/scipy`](https://gitlab.b-data.ch/cuda/python/scipy/container_registry)
 
-See [Notes](NOTES.md) for tweaks.
+See [CUDA Notes](CUDA_NOTES.md) for tweaks.
