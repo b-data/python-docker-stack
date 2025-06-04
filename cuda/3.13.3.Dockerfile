@@ -1,16 +1,9 @@
-ARG CUDNN_VERSION=8.9.7.29
+ARG CUDNN_VERSION=9.10.1.4
 ARG CUDNN_VERSION_AMD64=${CUDNN_VERSION}
 ARG CUDNN_VERSION_ARM64=${CUDNN_VERSION}
-ARG CUDNN_CUDA_VERSION_MAJ_MIN=12.2
+ARG CUDNN_CUDA_VERSION_MAJ_MIN=12.0
 ARG CUDNN_CUDA_VERSION_MAJ_MIN_AMD64=${CUDNN_CUDA_VERSION_MAJ_MIN}
 ARG CUDNN_CUDA_VERSION_MAJ_MIN_ARM64=${CUDNN_CUDA_VERSION_MAJ_MIN}
-
-ARG LIBNVINFER_VERSION
-ARG LIBNVINFER_VERSION_AMD64=10.11.0.33
-ARG LIBNVINFER_VERSION_ARM64=10.3.0.26
-ARG LIBNVINFER_CUDA_VERSION_MAJ_MIN
-ARG LIBNVINFER_CUDA_VERSION_MAJ_MIN_AMD64=12.9
-ARG LIBNVINFER_CUDA_VERSION_MAJ_MIN_ARM64=12.5
 
 ## CUDA_IMAGE
 ## ├── nvidia/cuda:12.9.0-runtime-ubuntu22.04
@@ -133,11 +126,6 @@ FROM cudnn${CUDNN_VERSION_MAJ}-${CUDA_IMAGE_FLAVOR}-${TARGETARCH}
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-ARG LIBNVINFER_VERSION_AMD64
-ARG LIBNVINFER_VERSION_ARM64
-ARG LIBNVINFER_CUDA_VERSION_MAJ_MIN_AMD64
-ARG LIBNVINFER_CUDA_VERSION_MAJ_MIN_ARM64
-
 ARG CUDA_HOME=/usr/local/cuda
 ARG NVBLAS_CONFIG_FILE=/etc/nvblas.conf
 
@@ -184,60 +172,5 @@ RUN cpuBlasLib="$(update-alternatives --query \
   && apt-mark hold \
     ${NV_CUDNN_PACKAGE_NAME} \
     ${NV_CUDNN_DEV_PACKAGE_NAME} \
-  ## Install TensorRT
-  && case "$dpkgArch" in \
-    amd64) LIBNVINFER_VERSION=$LIBNVINFER_VERSION_AMD64 LIBNVINFER_CUDA_VERSION_MAJ_MIN=$LIBNVINFER_CUDA_VERSION_MAJ_MIN_AMD64 ;; \
-    arm64) LIBNVINFER_VERSION=$LIBNVINFER_VERSION_ARM64 LIBNVINFER_CUDA_VERSION_MAJ_MIN=$LIBNVINFER_CUDA_VERSION_MAJ_MIN_ARM64 ;; \
-    *) echo "error: Architecture $dpkgArch unsupported"; exit 1 ;; \
-  esac \
-  ## Install development libraries and headers
-  ## if devel-flavor of CUDA image is used
-  && if [ ${CUDA_IMAGE_FLAVOR} = "devel" ]; then \
-    dev="-dev"; \
-    if dpkg --compare-versions ${LIBNVINFER_VERSION} gt "8.6"; then \
-      headers="-headers"; \
-    fi; \
-  fi \
-  && LIBNVINFER_VERSION_MAJ=${LIBNVINFER_VERSION%%.*} \
-  && CUDA_VERSION_MAJ_MIN=${LIBNVINFER_CUDA_VERSION_MAJ_MIN:-${CUDA_VERSION%.*}} \
-  && apt-get -y install --no-install-recommends \
-    libnvinfer${LIBNVINFER_VERSION_MAJ}=${LIBNVINFER_VERSION}-1+cuda${CUDA_VERSION_MAJ_MIN} \
-    libnvinfer${dev:-${LIBNVINFER_VERSION_MAJ}}=${LIBNVINFER_VERSION}-1+cuda${CUDA_VERSION_MAJ_MIN} \
-    libnvinfer${headers}${dev:-${LIBNVINFER_VERSION_MAJ}}=${LIBNVINFER_VERSION}-1+cuda${CUDA_VERSION_MAJ_MIN} \
-    libnvinfer-plugin${LIBNVINFER_VERSION_MAJ}=${LIBNVINFER_VERSION}-1+cuda${CUDA_VERSION_MAJ_MIN} \
-    libnvinfer-plugin${dev:-${LIBNVINFER_VERSION_MAJ}}=${LIBNVINFER_VERSION}-1+cuda${CUDA_VERSION_MAJ_MIN} \
-    libnvinfer${headers}-plugin${dev:-${LIBNVINFER_VERSION_MAJ}}=${LIBNVINFER_VERSION}-1+cuda${CUDA_VERSION_MAJ_MIN} \
-  ## Keep apt from auto upgrading the libnvinfer packages
-  && apt-mark hold \
-    libnvinfer${LIBNVINFER_VERSION_MAJ} \
-    libnvinfer${dev:-${LIBNVINFER_VERSION_MAJ}} \
-    libnvinfer${headers}${dev:-${LIBNVINFER_VERSION_MAJ}} \
-    libnvinfer-plugin${LIBNVINFER_VERSION_MAJ} \
-    libnvinfer-plugin${dev:-${LIBNVINFER_VERSION_MAJ}} \
-    libnvinfer${headers}-plugin${dev:-${LIBNVINFER_VERSION_MAJ}} \
-  ## Create symlink when only newer TensorRT libraries are available
-  && trtRunLib=$(ls -d /usr/lib/$(uname -m)-linux-gnu/* | \
-    grep 'libnvinfer.so.[0-9]\+$') \
-  && trtPluLib=$(ls -d /usr/lib/$(uname -m)-linux-gnu/* | \
-    grep 'libnvinfer_plugin.so.[0-9]\+$') \
-  && if [ "$(echo $trtRunLib | sed -n 's/.*.so.\([0-9]\+\)/\1/p')" -gt "8" ]; then \
-    ## TensorFlow versions < 2.18 expect TensorRT libraries version 8.6.1/8.6.2
-    if [ "$dpkgArch" = "amd64" ]; then \
-      ln -rs $trtRunLib /usr/lib/$(uname -m)-linux-gnu/libnvinfer.so.8.6.1; \
-      ln -rs $trtPluLib /usr/lib/$(uname -m)-linux-gnu/libnvinfer_plugin.so.8.6.1; \
-    fi; \
-    if [ "$dpkgArch" = "arm64" ]; then \
-      ln -rs $trtRunLib /usr/lib/$(uname -m)-linux-gnu/libnvinfer.so.8.6.2; \
-      ln -rs $trtPluLib /usr/lib/$(uname -m)-linux-gnu/libnvinfer_plugin.so.8.6.2; \
-    fi; \
-    ## TensorFlow versions < 2.15 expect TensorRT libraries version 8
-    ln -rs $trtRunLib /usr/lib/$(uname -m)-linux-gnu/libnvinfer.so.8; \
-    ln -rs $trtPluLib /usr/lib/$(uname -m)-linux-gnu/libnvinfer_plugin.so.8; \
-  fi \
-  && if [ "$(echo $trtRunLib | sed -n 's/.*.so.\([0-9]\+\)/\1/p')" -gt "7" ]; then \
-    ## TensorFlow versions < 2.12 expect TensorRT libraries version 7
-    ln -rs $trtRunLib /usr/lib/$(uname -m)-linux-gnu/libnvinfer.so.7; \
-    ln -rs $trtPluLib /usr/lib/$(uname -m)-linux-gnu/libnvinfer_plugin.so.7; \
-  fi \
   ## Clean up
   && rm -rf /var/lib/apt/lists/*
