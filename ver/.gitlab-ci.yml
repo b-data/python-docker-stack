@@ -1,6 +1,6 @@
 .env:
   variables:
-    PYTHON_VERSION: "3.13.3"
+    PYTHON_VERSION: "3.13.4"
     CUDA_VERSION: "12.9.0"
     CUDNN_VERSION_AMD64: "9.10.1.4"
     CUDNN_VERSION_ARM64: "9.10.1.4"
