@@ -62,9 +62,9 @@ docker build \
   --build-arg BASE_IMAGE=ubuntu \
   --build-arg BASE_IMAGE_TAG=22.04 \
   --build-arg CUDA_IMAGE=nvidia/cuda \
-  --build-arg CUDA_VERSION=12.9.0 \
+  --build-arg CUDA_VERSION=12.9.1 \
   --build-arg CUDA_IMAGE_SUBTAG=runtime-ubuntu22.04 \
-  --build-arg PYTHON_VERSION=3.13.3 \
+  --build-arg PYTHON_VERSION=3.13.4 \
   -t cuda/python/ver \
   -f ver/latest.Dockerfile .
 ```
