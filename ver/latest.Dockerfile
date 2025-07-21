@@ -51,6 +51,7 @@ RUN apt-get update \
     libexpat1-dev \
     libjs-sphinxdoc \
     liblapack-dev \
+    libncurses-dev \
     ${BLAS} \
     locales \
     netbase \
