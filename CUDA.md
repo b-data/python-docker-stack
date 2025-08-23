@@ -90,7 +90,7 @@ docker build \
   --build-arg BASE_IMAGE=ubuntu \
   --build-arg BASE_IMAGE_TAG=24.04 \
   --build-arg CUDA_IMAGE=nvidia/cuda \
-  --build-arg CUDA_IMAGE_SUBTAG=[cudnn8-]runtime-ubuntu24.04 \
+  --build-arg CUDA_IMAGE_SUBTAG=runtime-ubuntu24.04 \
   -t cuda/python/ver:MAJOR.MINOR.PATCH \
   -f ver/MAJOR.MINOR.PATCH.Dockerfile .
 ```
