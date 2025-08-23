@@ -49,10 +49,13 @@ RUN apt-get update \
   && apt-get install -y --no-install-recommends \
     ca-certificates \
     libexpat1-dev \
+    libffi-dev \
+    libgdbm-dev \
     libjs-sphinxdoc \
     liblapack-dev \
     libncurses-dev \
     ${BLAS} \
+    libreadline-dev \
     locales \
     netbase \
     pkg-config \
