@@ -23,7 +23,6 @@ Otherwise the same as the [Python docker stack](README.md#python-docker-stack) p
   [CUDA math libraries](https://developer.nvidia.com/gpu-accelerated-libraries),
   [NCCL](https://developer.nvidia.com/nccl) and
   [cuDNN](https://developer.nvidia.com/cudnn)
-* TensortRT and TensorRT plugin libraries
 
 ## Table of Contents
 
