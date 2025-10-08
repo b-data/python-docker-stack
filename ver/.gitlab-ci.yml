@@ -11,13 +11,6 @@
 
 workflow:
   rules:
-    - if: $CI_COMMIT_BRANCH == "main" && $CUDA_BASE_IMAGE == "ubuntu"
-      variables:
-        BASE_IMAGE: "$CUDA_BASE_IMAGE"
-        BASE_IMAGE_TAG: "$CUDA_BASE_IMAGE_TAG"
-        CUDA_IMAGE_BASE_SUBTAG: "base-$BASE_IMAGE$BASE_IMAGE_TAG"
-        CUDA_IMAGE_DEVEL_SUBTAG: "devel-$BASE_IMAGE$BASE_IMAGE_TAG"
-        CUDA_IMAGE_SUBTAG: "runtime-$BASE_IMAGE$BASE_IMAGE_TAG"
     - if: $CI_COMMIT_BRANCH == "freeze-version" && $CUDA_BASE_IMAGE == null && $PYTHON_VERSION =~ /3.12/
       variables:
         BASE_IMAGE_TAG: "12"
@@ -25,6 +18,13 @@ workflow:
       variables:
         BASE_IMAGE: "$CUDA_BASE_IMAGE"
         BASE_IMAGE_TAG: "22.04"
+        CUDA_IMAGE_BASE_SUBTAG: "base-$BASE_IMAGE$BASE_IMAGE_TAG"
+        CUDA_IMAGE_DEVEL_SUBTAG: "devel-$BASE_IMAGE$BASE_IMAGE_TAG"
+        CUDA_IMAGE_SUBTAG: "runtime-$BASE_IMAGE$BASE_IMAGE_TAG"
+    - if: $CUDA_BASE_IMAGE == "ubuntu"
+      variables:
+        BASE_IMAGE: "$CUDA_BASE_IMAGE"
+        BASE_IMAGE_TAG: "$CUDA_BASE_IMAGE_TAG"
         CUDA_IMAGE_BASE_SUBTAG: "base-$BASE_IMAGE$BASE_IMAGE_TAG"
         CUDA_IMAGE_DEVEL_SUBTAG: "devel-$BASE_IMAGE$BASE_IMAGE_TAG"
         CUDA_IMAGE_SUBTAG: "runtime-$BASE_IMAGE$BASE_IMAGE_TAG"
