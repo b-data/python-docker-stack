@@ -1,13 +1,34 @@
 .env:
   variables:
-    PYTHON_VERSION: "3.13.6"
-    CUDA_VERSION: "12.9.1"
-    CUDNN_VERSION_AMD64: "9.11.1.4"
-    CUDNN_VERSION_ARM64: "9.11.1.4"
-    CUDNN_CUDA_VERSION_MAJ_MIN_AMD64: "12.0"
-    CUDNN_CUDA_VERSION_MAJ_MIN_ARM64: "12.0"
+    PYTHON_VERSION: "3.13.7"
+    CUDA_VERSION: "13.0.1"
+    CUDNN_VERSION_AMD64: "9.13.1.26"
+    CUDNN_VERSION_ARM64: "9.13.1.26"
+    CUDNN_CUDA_VERSION_MAJ_MIN_AMD64: "13.0"
+    CUDNN_CUDA_VERSION_MAJ_MIN_ARM64: "13.0"
     TAG_VERSION_MAJ_MIN: "false"
     TAG_VERSION_MAJ: "false"
+
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" && $CUDA_BASE_IMAGE == "ubuntu"
+      variables:
+        BASE_IMAGE: "$CUDA_BASE_IMAGE"
+        BASE_IMAGE_TAG: "$CUDA_BASE_IMAGE_TAG"
+        CUDA_IMAGE_BASE_SUBTAG: "base-$BASE_IMAGE$BASE_IMAGE_TAG"
+        CUDA_IMAGE_DEVEL_SUBTAG: "devel-$BASE_IMAGE$BASE_IMAGE_TAG"
+        CUDA_IMAGE_SUBTAG: "runtime-$BASE_IMAGE$BASE_IMAGE_TAG"
+    - if: $CI_COMMIT_BRANCH == "freeze-version" && $CUDA_BASE_IMAGE == null && $PYTHON_VERSION =~ /3.12/
+      variables:
+        BASE_IMAGE_TAG: "12"
+    - if: $CI_COMMIT_BRANCH == "freeze-version" && $CUDA_BASE_IMAGE == "ubuntu" && $PYTHON_VERSION =~ /3.12/
+      variables:
+        BASE_IMAGE: "$CUDA_BASE_IMAGE"
+        BASE_IMAGE_TAG: "22.04"
+        CUDA_IMAGE_BASE_SUBTAG: "base-$BASE_IMAGE$BASE_IMAGE_TAG"
+        CUDA_IMAGE_DEVEL_SUBTAG: "devel-$BASE_IMAGE$BASE_IMAGE_TAG"
+        CUDA_IMAGE_SUBTAG: "runtime-$BASE_IMAGE$BASE_IMAGE_TAG"
+    - if: $CI_COMMIT_BRANCH
 
 .before-script-all: &before-script-all
   - |

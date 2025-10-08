@@ -23,7 +23,6 @@ Otherwise the same as the [Python docker stack](README.md#python-docker-stack) p
   [CUDA math libraries](https://developer.nvidia.com/gpu-accelerated-libraries),
   [NCCL](https://developer.nvidia.com/nccl) and
   [cuDNN](https://developer.nvidia.com/cudnn)
-* TensortRT and TensorRT plugin libraries
 
 ## Table of Contents
 
@@ -60,11 +59,11 @@ latest:
 ```bash
 docker build \
   --build-arg BASE_IMAGE=ubuntu \
-  --build-arg BASE_IMAGE_TAG=22.04 \
+  --build-arg BASE_IMAGE_TAG=24.04 \
   --build-arg CUDA_IMAGE=nvidia/cuda \
-  --build-arg CUDA_VERSION=12.9.1 \
-  --build-arg CUDA_IMAGE_SUBTAG=runtime-ubuntu22.04 \
-  --build-arg PYTHON_VERSION=3.13.6 \
+  --build-arg CUDA_VERSION=13.0.1 \
+  --build-arg CUDA_IMAGE_SUBTAG=runtime-ubuntu24.04 \
+  --build-arg PYTHON_VERSION=3.13.7 \
   -t cuda/python/ver \
   -f ver/latest.Dockerfile .
 ```
@@ -74,8 +73,8 @@ docker build \
 ```bash
 docker build \
   --build-arg BUILD_ON_IMAGE=cuda/python/ver \
-  --build-arg CUDNN_VERSION=9.10.0.56 \
-  --build-arg CUDNN_CUDA_VERSION_MAJ_MIN=12.0 \
+  --build-arg CUDNN_VERSION=9.13.0.50 \
+  --build-arg CUDNN_CUDA_VERSION_MAJ_MIN=13.0 \
   --build-arg CUDA_IMAGE_FLAVOR=runtime \
   -t cuda/python/ver \
   -f cuda/latest.Dockerfile .
@@ -88,9 +87,9 @@ version:
 ```bash
 docker build \
   --build-arg BASE_IMAGE=ubuntu \
-  --build-arg BASE_IMAGE_TAG=22.04 \
+  --build-arg BASE_IMAGE_TAG=24.04 \
   --build-arg CUDA_IMAGE=nvidia/cuda \
-  --build-arg CUDA_IMAGE_SUBTAG=[cudnn8-]runtime-ubuntu22.04 \
+  --build-arg CUDA_IMAGE_SUBTAG=runtime-ubuntu24.04 \
   -t cuda/python/ver:MAJOR.MINOR.PATCH \
   -f ver/MAJOR.MINOR.PATCH.Dockerfile .
 ```

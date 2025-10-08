@@ -1,5 +1,5 @@
 ARG BASE_IMAGE=debian
-ARG BASE_IMAGE_TAG=12
+ARG BASE_IMAGE_TAG=13
 ARG CUDA_IMAGE
 ARG CUDA_IMAGE_SUBTAG
 ARG BLAS=libopenblas-dev
@@ -49,10 +49,13 @@ RUN apt-get update \
   && apt-get install -y --no-install-recommends \
     ca-certificates \
     libexpat1-dev \
+    libffi-dev \
+    libgdbm-dev \
     libjs-sphinxdoc \
     liblapack-dev \
     libncurses-dev \
     ${BLAS} \
+    libreadline-dev \
     locales \
     netbase \
     pkg-config \
