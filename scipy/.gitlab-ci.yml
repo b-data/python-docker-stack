@@ -1,9 +1,8 @@
-.env:
-  variables:
-    PYTHON_VERSION: "3.12.11"
-    CTAN_REPO_BUILD_LATEST: "https://mirror.init7.net/ctan/systems/texlive/tlnet"
-    TAG_VERSION_MAJ_MIN: "true"
-    TAG_VERSION_MAJ: "false"
+variables:
+  PYTHON_VERSION: "3.12.11"
+  CTAN_REPO_BUILD_LATEST: "https://mirror.init7.net/ctan/systems/texlive/tlnet"
+  TAG_VERSION_MAJ_MIN: "true"
+  TAG_VERSION_MAJ: "false"
 
 .before-script-build: &before-script-build
   - |
@@ -31,7 +30,6 @@
 .build:
   image: glcr.b-data.ch/docker/docker:dind
   stage: build
-  extends: .env
   services:
     - name: glcr.b-data.ch/docker/docker:dind
       alias: docker
@@ -46,7 +44,6 @@
 .post:
   image: glcr.b-data.ch/docker/docker:dind
   stage: .post
-  extends: .env
 
 build:latest-linux-amd64:
   extends: .build
