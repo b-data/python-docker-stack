@@ -29,6 +29,8 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     librsvg2-bin \
     qpdf \
     texinfo \
+    ## Python: For tables wheels
+    libblosc2-dev \
     ## Python: For h5py wheels (arm64)
     libhdf5-dev \
   ## Install quarto
@@ -119,7 +121,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     sqlalchemy \
     statsmodels \
     sympy \
-    tables \
+    tables==3.10.1 \
     #widgetsnbextension \
     xlrd \
   ## Install facets
