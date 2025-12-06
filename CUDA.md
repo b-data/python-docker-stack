@@ -63,7 +63,7 @@ docker build \
   --build-arg CUDA_IMAGE=nvidia/cuda \
   --build-arg CUDA_VERSION=13.0.2 \
   --build-arg CUDA_IMAGE_SUBTAG=runtime-ubuntu24.04 \
-  --build-arg PYTHON_VERSION=3.14.1 \
+  --build-arg PYTHON_VERSION=3.14.2 \
   -t cuda/python/ver \
   -f ver/latest.Dockerfile .
 ```
