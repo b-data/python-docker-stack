@@ -1,10 +1,14 @@
 variables:
   PYTHON_VERSION: "3.14.2"
-  CUDA_VERSION: "13.0.2"
+  CUDA_VERSION: "13.1.0"
   CUDNN_VERSION_AMD64: "9.17.0.29"
   CUDNN_VERSION_ARM64: "9.17.0.29"
   CUDNN_CUDA_VERSION_MAJ_MIN_AMD64: "13.0"
   CUDNN_CUDA_VERSION_MAJ_MIN_ARM64: "13.0"
+  NCCL_VERSION_AMD64: "2.28.9"
+  NCCL_VERSION_ARM64: "2.28.9"
+  NCCL_CUDA_VERSION_MAJ_MIN_AMD64: "13.0"
+  NCCL_CUDA_VERSION_MAJ_MIN_ARM64: "13.0"
   TAG_VERSION_MAJ_MIN: "false"
   TAG_VERSION_MAJ: "false"
 
@@ -106,6 +110,8 @@ build:latest-linux-amd64:
         docker build \
         --build-arg CUDNN_VERSION_AMD64 \
         --build-arg CUDNN_CUDA_VERSION_MAJ_MIN_AMD64 \
+        --build-arg NCCL_VERSION_AMD64 \
+        --build-arg NCCL_CUDA_VERSION_MAJ_MIN_AMD64 \
         --build-arg LIBNVINFER_VERSION_AMD64 \
         --build-arg LIBNVINFER_CUDA_VERSION_MAJ_MIN_AMD64 \
         --build-arg BUILD_ON_IMAGE=$CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-amd64 \
@@ -147,6 +153,8 @@ build:latest-linux-arm64v8:
         docker build \
         --build-arg CUDNN_VERSION_ARM64 \
         --build-arg CUDNN_CUDA_VERSION_MAJ_MIN_ARM64 \
+        --build-arg NCCL_VERSION_ARM64 \
+        --build-arg NCCL_CUDA_VERSION_MAJ_MIN_ARM64 \
         --build-arg LIBNVINFER_VERSION_ARM64 \
         --build-arg LIBNVINFER_CUDA_VERSION_MAJ_MIN_ARM64 \
         --build-arg BUILD_ON_IMAGE=$CI_APP_REPO:$CI_APP_TAG${CUDA_IMAGE_FLAVOR:+-}$CUDA_IMAGE_FLAVOR-linux-arm64v8 \
