@@ -1,5 +1,5 @@
 ARG BUILD_ON_IMAGE=glcr.b-data.ch/python/base
-ARG PYTHON_VERSION=3.13.11
+ARG PYTHON_VERSION=3.14.2
 ARG QUARTO_VERSION=1.8.27
 ARG CTAN_REPO=https://www.texlive.info/tlnet-archive/2026/02/03/tlnet
 
@@ -119,14 +119,9 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     sqlalchemy \
     statsmodels \
     sympy \
-    tables \
     #widgetsnbextension \
     xlrd \
-  ## Install facets
-  #&& cd /tmp \
-  #&& git clone https://github.com/PAIR-code/facets.git \
-  #&& jupyter nbextension install facets/facets-dist/ --sys-prefix \
-  #&& cd / \
+  && pip install git+https://github.com/PyTables/PyTables.git \
   ## Clean up
   && rm -rf /tmp/* \
   && rm -rf /var/lib/apt/lists/* \
