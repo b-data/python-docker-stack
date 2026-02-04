@@ -1,6 +1,6 @@
 ARG BUILD_ON_IMAGE=glcr.b-data.ch/python/base
 ARG PYTHON_VERSION
-ARG QUARTO_VERSION=1.8.26
+ARG QUARTO_VERSION=1.8.27
 ARG CTAN_REPO=https://mirror.ctan.org/systems/texlive/tlnet
 
 FROM ${BUILD_ON_IMAGE}${PYTHON_VERSION:+:$PYTHON_VERSION}
@@ -29,8 +29,6 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     librsvg2-bin \
     qpdf \
     texinfo \
-    ## Python: For tables wheels
-    libblosc2-dev \
     ## Python: For h5py wheels (arm64)
     libhdf5-dev \
   ## Install quarto
@@ -108,7 +106,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     #ipympl \
     #ipywidgets \
     matplotlib \
-    #numba \
+    numba \
     numexpr \
     numpy \
     pandas \
@@ -121,9 +119,9 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     sqlalchemy \
     statsmodels \
     sympy \
-    tables==3.10.1 \
     #widgetsnbextension \
     xlrd \
+  && pip install git+https://github.com/PyTables/PyTables.git \
   ## Clean up
   && rm -rf /tmp/* \
   && rm -rf /var/lib/apt/lists/* \
