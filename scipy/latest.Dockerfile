@@ -119,9 +119,9 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     sqlalchemy \
     statsmodels \
     sympy \
+    tables \
     #widgetsnbextension \
     xlrd \
-  && pip install git+https://github.com/PyTables/PyTables.git \
   ## Clean up
   && rm -rf /tmp/* \
   && rm -rf /var/lib/apt/lists/* \
