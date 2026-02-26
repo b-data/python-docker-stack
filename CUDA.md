@@ -73,7 +73,7 @@ docker build \
 ```bash
 docker build \
   --build-arg BUILD_ON_IMAGE=cuda/python/ver \
-  --build-arg CUDNN_VERSION=9.19.0.56 \
+  --build-arg CUDNN_VERSION=9.19.1.2 \
   --build-arg CUDNN_CUDA_VERSION_MAJ_MIN=13.1 \
   --build-arg NCCL_VERSION=2.29.2 \
   --build-arg NCCL_CUDA_VERSION_MAJ_MIN=13.1 \
