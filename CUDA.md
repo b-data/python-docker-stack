@@ -75,7 +75,7 @@ docker build \
   --build-arg BUILD_ON_IMAGE=cuda/python/ver \
   --build-arg CUDNN_VERSION=9.25.0.15 \
   --build-arg CUDNN_CUDA_VERSION_MAJ_MIN=13.3 \
-  --build-arg NCCL_VERSION=2.30.7 \
+  --build-arg NCCL_VERSION=2.31.2 \
   --build-arg NCCL_CUDA_VERSION_MAJ_MIN=13.3 \
   --build-arg CUDA_IMAGE_FLAVOR=runtime \
   -t cuda/python/ver \
