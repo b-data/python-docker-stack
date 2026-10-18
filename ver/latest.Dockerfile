@@ -56,6 +56,7 @@ RUN apt-get update \
     libncurses-dev \
     ${BLAS} \
     libreadline-dev \
+    libsqlite3-dev \
     locales \
     netbase \
     pkg-config \
@@ -63,6 +64,9 @@ RUN apt-get update \
     unzip \
     zip \
     zlib1g-dev \
+  && if [ "${BASE_IMAGE}" = "debian:13" ] || [ "${BASE_IMAGE}" = "ubuntu:26.04" ]; then \
+    apt-get install -y --no-install-recommends libmpdec-dev; \
+  fi \
   && if [ -z "$PYTHON_VERSION" ]; then \
     ## Install system Python
     apt-get -y install --no-install-recommends \
