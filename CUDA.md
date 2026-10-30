@@ -59,10 +59,10 @@ latest:
 ```bash
 docker build \
   --build-arg BASE_IMAGE=ubuntu \
-  --build-arg BASE_IMAGE_TAG=24.04 \
+  --build-arg BASE_IMAGE_TAG=26.04 \
   --build-arg CUDA_IMAGE=nvidia/cuda \
   --build-arg CUDA_VERSION=13.4.3 \
-  --build-arg CUDA_IMAGE_SUBTAG=runtime-ubuntu24.04 \
+  --build-arg CUDA_IMAGE_SUBTAG=runtime-ubuntu26.04 \
   --build-arg PYTHON_VERSION=3.15.1 \
   -t cuda/python/ver \
   -f ver/latest.Dockerfile .
@@ -89,9 +89,9 @@ version:
 ```bash
 docker build \
   --build-arg BASE_IMAGE=ubuntu \
-  --build-arg BASE_IMAGE_TAG=24.04 \
+  --build-arg BASE_IMAGE_TAG=26.04 \
   --build-arg CUDA_IMAGE=nvidia/cuda \
-  --build-arg CUDA_IMAGE_SUBTAG=runtime-ubuntu24.04 \
+  --build-arg CUDA_IMAGE_SUBTAG=runtime-ubuntu26.04 \
   -t cuda/python/ver:MAJOR.MINOR.PATCH \
   -f ver/MAJOR.MINOR.PATCH.Dockerfile .
 ```
